@@ -19,3 +19,8 @@ def step_impl(context, num, text):
 @then(u'todo item {num:d} will be marked dirty')
 def step_impl(context, num):
     assert context.todos[num-1].dirty
+
+@then(u'todo item {num:d} will have id {id:d}')
+def step_impl(context, num, id):
+    assert context.todos[num-1].id == id
+
