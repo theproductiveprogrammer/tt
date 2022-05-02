@@ -40,3 +40,8 @@ def step_impl(context, num):
 def step_impl(context, num, tags):
     todo = get_todo_item(context.todos, num)
     assert tags == ",".join(todo.tags)
+
+@then(u'todo item {num:d} will have note "{notes}"')
+def step_impl(context, num, notes):
+    todo = get_todo_item(context.todos, num)
+    assert notes == "\n".join(todo.notes)
