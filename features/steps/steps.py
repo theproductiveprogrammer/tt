@@ -30,3 +30,13 @@ def step_impl(context, num):
 def step_impl(context, num, id):
     assert get_todo_item(context.todos, num).id == id
 
+@then(u'todo item {num:d} will have tags ""')
+def step_impl(context, num):
+    todo = get_todo_item(context.todos, num)
+    print(todo.tags)
+    assert not todo.tags
+
+@then(u'todo item {num:d} will have tags "{tags}"')
+def step_impl(context, num, tags):
+    todo = get_todo_item(context.todos, num)
+    assert tags == ",".join(todo.tags)
