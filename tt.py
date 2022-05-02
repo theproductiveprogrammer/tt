@@ -50,14 +50,42 @@ def grant_user_request(todos):
     print(todos)
 
 def grant_request(request, todos):
-    if request and request[0] == "+":
+    if not request:
+        raise "Nothing to do!"
+
+    if request[0] == "+":
         add_new_todo(request[1:], todos)
+    elif request[0] == '.':
+        update_dotted(request, todos)
     else:
         raise "Did not understand " + request
+
+
+#       understand/
+# we can reference todos using a "dotted notation":
+#   .  < first/most recent todo
+#   .. < second todo
+#   ... < third todo
+#   .... and so on
+def update_dotted(request, todos):
+    num = 0
+    while request[0] == '.':
+        num += 1
+        request = request[1:]
+    update_todo(num, request, todos)
+
+def update_todo(num, txt, todos):
+    todo = add_new_todo(txt, todos)
+    for todo_ in reversed(todos):
+        if todo_.ref == num:
+            todo.id = todo_.id
+            return
 
 def add_new_todo(txt, todos):
     todo = ToDo()
     todo.txt = txt.strip()
+    if not todo.txt:
+        raise "Todo item empty"
     todo.dirty = True
     todo.id = 1
     todo.ref = 1
@@ -66,6 +94,7 @@ def add_new_todo(txt, todos):
         if todo_.id == todo.id:
             todo.id += 1
     todos.append(todo)
+    return todo
 
 def get_todo_item(todos, num):
     for todo in reversed(todos):
