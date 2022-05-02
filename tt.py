@@ -51,16 +51,19 @@ def grant_user_request(todos):
 
 def grant_request(request, todos):
     if request and request[0] == "+":
-        todo = ToDo()
-        todo.txt = request[1:].strip()
-        todo.dirty = True
-        todo.id = 1
-        for todo_ in todos:
-            if todo_.id == todo.id:
-                todo.id += 1
-        todos.append(todo)
+        add_new_todo(request[1:], todos)
     else:
         raise "Did not understand " + request
+
+def add_new_todo(txt, todos):
+    todo = ToDo()
+    todo.txt = txt.strip()
+    todo.dirty = True
+    todo.id = 1
+    for todo_ in todos:
+        if todo_.id == todo.id:
+            todo.id += 1
+    todos.append(todo)
 
 class ToDo:
     def __init__(self):
