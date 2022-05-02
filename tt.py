@@ -52,9 +52,12 @@ def grant_user_request(todos):
 def grant_request(request, todos):
     if request and request[0] == "+":
         todo = ToDo()
-        todo.id = 1
         todo.txt = request[1:].strip()
         todo.dirty = True
+        todo.id = 1
+        for todo_ in todos:
+            if todo_.id == todo.id:
+                todo.id += 1
         todos.append(todo)
     else:
         raise "Did not understand " + request
