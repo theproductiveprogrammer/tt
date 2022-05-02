@@ -11,6 +11,7 @@ Feature: tt todo manager
       | + new item    | new item   |
       | +new item     | new item   |
       | +  new item   | new item   |
+      | +  NEW Item   | NEW Item   |
 
 
   Scenario: Add a new todo item
