@@ -75,13 +75,22 @@ def update_dotted(request, todos):
     update_todo(num, request, todos)
 
 def update_todo(num, txt, todos):
-    todo = add_new_todo(txt, todos)
+    todo = make_new_todo(txt, todos)
     for todo_ in reversed(todos):
         if todo_.ref == num:
             todo.id = todo_.id
-            return
+        todo_.ref += 1
+    append_todo(todo, todos)
 
 def add_new_todo(txt, todos):
+    append_todo(make_new_todo(txt, todos), todos)
+
+def append_todo(todo, todos):
+    for todo_ in todos:
+        todo_.ref += 1
+    todos.append(todo)
+
+def make_new_todo(txt, todos):
     todo = ToDo()
     todo.txt = txt.strip()
     if not todo.txt:
@@ -90,10 +99,8 @@ def add_new_todo(txt, todos):
     todo.id = 1
     todo.ref = 1
     for todo_ in todos:
-        todo_.ref += 1
         if todo_.id == todo.id:
             todo.id += 1
-    todos.append(todo)
     return todo
 
 def get_todo_item(todos, num):
@@ -108,6 +115,8 @@ class ToDo:
         self.txt = None
         self.dirty = False
 
+    def __repr__(self):
+        return f"ToDo<{self.id} {self.txt} #{self.ref} {'*' if self.dirty else None}>"
 
 if __name__ == "__main__":
     main()
