@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import sys
 import os
+import re
 
 #       understand/
 # main entry point into our program
@@ -92,9 +93,10 @@ def append_todo(todo, todos):
 
 def make_new_todo(txt, todos):
     todo = ToDo()
-    todo.txt = txt.strip()
-    if not todo.txt:
+    txt = txt.strip()
+    if not txt:
         raise "Todo item empty"
+    (todo.txt, todo.tags) = extract_tags(txt)
     todo.dirty = True
     todo.id = 1
     todo.ref = 1
@@ -102,6 +104,17 @@ def make_new_todo(txt, todos):
         if todo_.id == todo.id:
             todo.id += 1
     return todo
+
+def extract_tags(txt):
+    tags = []
+    p = re.compile(":([^\s:]*)")
+    m = p.search(txt)
+    while m:
+        txt = (txt[0:m.span()[0]].strip() + " " + txt[m.span()[1]:]).strip()
+        if m.group(1):
+            tags.append(m.group(1))
+        m = p.search(txt)
+    return (txt, tags)
 
 def get_todo_item(todos, num):
     for todo in reversed(todos):
@@ -113,10 +126,11 @@ class ToDo:
         self.id = None
         self.ref = None
         self.txt = None
+        self.tags = []
         self.dirty = False
 
     def __repr__(self):
-        return f"ToDo<{self.id} {self.txt} #{self.ref} {'*' if self.dirty else None}>"
+        return f"ToDo<{self.id} {self.txt} :{':'.join(self.tags)} #{self.ref} {'*' if self.dirty else None}>"
 
 if __name__ == "__main__":
     main()
