@@ -12,3 +12,8 @@ Feature: tt todo manager
       | +new item     | new item   |
       | +  new item   | new item   |
 
+
+  Scenario: Add a new todo item
+    Given we have no todo items
+     When we give the command "+ another new item :123"
+     Then todo item 1 will have id 1
