@@ -53,6 +53,7 @@ def grant_request(request, todos):
     if request and request[0] == "+":
         todo = ToDo()
         todo.txt = request[1:].strip()
+        todo.dirty = True
         todos.append(todo)
     else:
         raise "Did not understand " + request
@@ -60,6 +61,7 @@ def grant_request(request, todos):
 class ToDo:
     def __init__(self):
         self.txt = None
+        self.dirty = False
 
 
 if __name__ == "__main__":
