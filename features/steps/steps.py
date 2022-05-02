@@ -10,7 +10,7 @@ def step_impl(context):
 def step_impl(context, num):
     context.todos = []
     for i in range(num):
-        add_new_todo("item" + str(num), context.todos)
+        add_new_todo("item" + str(i), context.todos)
     pass
 
 @when(u'we give the command "{text}"')
