@@ -52,6 +52,7 @@ def grant_user_request(todos):
 def grant_request(request, todos):
     if request and request[0] == "+":
         todo = ToDo()
+        todo.id = 1
         todo.txt = request[1:].strip()
         todo.dirty = True
         todos.append(todo)
@@ -60,6 +61,7 @@ def grant_request(request, todos):
 
 class ToDo:
     def __init__(self):
+        self.id = None
         self.txt = None
         self.dirty = False
 
