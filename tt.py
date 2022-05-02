@@ -50,10 +50,12 @@ def grant_user_request(todos):
     print(todos)
 
 def grant_request(request, todos):
-    if(request.startswith("+ ")):
+    if request and request[0] == "+":
         todo = ToDo()
-        todo.txt = request[2:]
+        todo.txt = request[1:].strip()
         todos.append(todo)
+    else:
+        raise "Did not understand " + request
 
 class ToDo:
     def __init__(self):
