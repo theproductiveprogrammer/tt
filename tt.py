@@ -60,14 +60,22 @@ def add_new_todo(txt, todos):
     todo.txt = txt.strip()
     todo.dirty = True
     todo.id = 1
+    todo.ref = 1
     for todo_ in todos:
+        todo_.ref += 1
         if todo_.id == todo.id:
             todo.id += 1
     todos.append(todo)
 
+def get_todo_item(todos, num):
+    for todo in reversed(todos):
+        if todo.ref == num:
+            return todo
+
 class ToDo:
     def __init__(self):
         self.id = None
+        self.ref = None
         self.txt = None
         self.dirty = False
 

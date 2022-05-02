@@ -1,5 +1,5 @@
 from behave import *
-from tt import grant_request, add_new_todo
+from tt import grant_request, add_new_todo, get_todo_item
 
 @given(u'we have no todo items')
 def step_impl(context):
@@ -20,13 +20,13 @@ def step_impl(context, text):
 
 @then(u'todo item {num:d} will have text "{text}"')
 def step_impl(context, num, text):
-    assert context.todos[num-1].txt == text
+    assert get_todo_item(context.todos, num).txt == text
 
 @then(u'todo item {num:d} will be marked dirty')
 def step_impl(context, num):
-    assert context.todos[num-1].dirty
+    assert get_todo_item(context.todos, num).dirty
 
 @then(u'todo item {num:d} will have id {id:d}')
 def step_impl(context, num, id):
-    assert context.todos[num-1].id == id
+    assert get_todo_item(context.todos, num).id == id
 

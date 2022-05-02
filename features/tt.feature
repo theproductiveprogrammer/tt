@@ -23,10 +23,11 @@ Feature: tt todo manager
     Given we have no todo items
      When we give the command "+ another new item :123"
       And we give the command "+ next item IS THE BEST"
-     Then todo item 1 will have id 1
-      And todo item 2 will have id 2
+     Then todo item 1 will have id 2
+      And todo item 2 will have id 1
 
   Scenario: Add a todo item to existing todos
     Given we have 25 todo items
      When we give the command "+ another new item :123"
-     Then todo item 26 will have id 26
+     Then todo item 26 will have id 1
+     Then todo item 1 will have id 26
