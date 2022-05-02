@@ -1,11 +1,17 @@
 from behave import *
-from tt import grant_request
+from tt import grant_request, add_new_todo
 
 @given(u'we have no todo items')
 def step_impl(context):
     context.todos = []
     pass
 
+@given(u'we have {num:d} todo items')
+def step_impl(context, num):
+    context.todos = []
+    for i in range(num):
+        add_new_todo("item" + str(num), context.todos)
+    pass
 
 @when(u'we give the command "{text}"')
 def step_impl(context, text):
