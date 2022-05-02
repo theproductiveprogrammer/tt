@@ -12,10 +12,10 @@ def step_impl(context, text):
     grant_request(text, context.todos)
 
 
-@then(u'the todo item {num:d} will have text "{text}"')
+@then(u'todo item {num:d} will have text "{text}"')
 def step_impl(context, num, text):
     assert context.todos[num-1].txt == text
 
-@then(u'the todo item {num:d} will be marked dirty')
+@then(u'todo item {num:d} will be marked dirty')
 def step_impl(context, num):
     assert context.todos[num-1].dirty
