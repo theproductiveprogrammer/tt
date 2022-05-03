@@ -81,6 +81,6 @@ def step_impl(context, num):
     assert save_format(todo) == context.text
 
 @then(u'todo item {num:d} will have display format')
-def step_impl(context):
+def step_impl(context, num):
     todo = get_todo_item(context.todos, num)
     assert display_format(todo) == context.text
