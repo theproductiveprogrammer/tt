@@ -63,3 +63,14 @@ Feature: show/represent the todo
       x 35@2022-01-01T02:03:35.897732+00:00 Target :shopping
       """
 
+  Scenario: Represents a todo in a display-able format
+    Given an existing todo list
+      """
+      x 35@2022-01-01T02:03:35.897732+00:00 Target :shopping
+      """
+    When we give the command "+ Code :tt"
+    Then todo item 2 will have display format
+      """
+      [.   ]x Target :shopping
+      """
+
