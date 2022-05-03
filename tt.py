@@ -57,7 +57,9 @@ def grant_request(request, todos):
     if request[0] == "+":
         add_new_todo(request[1:], todos)
     elif request[0] == '.':
-        update_dotted(request, todos)
+        update(request, todos)
+    elif request[0] == '^':
+        update(request[1:], todos)
     elif request[0] == 'n':
         add_note(request[1:], todos)
     else:
@@ -87,8 +89,23 @@ def get_dotted_ref(request):
         request = request[1:]
     return num, request.strip()
 
-def update_dotted(request, todos):
-    num, request = get_dotted_ref(request)
+def get_numbered_ref(request):
+    p = re.compile("^[0-9]+")
+    m = p.search(request)
+    if not m:
+        raise TTError("Could not find reference number")
+    request = request[m.span()[1]:].strip()
+    num = int(m.group(0))
+    return (num, request)
+
+def get_ref(request):
+    if request[0] == '.':
+        return get_dotted_ref(request)
+    else:
+        return get_numbered_ref(request)
+
+def update(request, todos):
+    num, request = get_ref(request)
     update_todo(num, request, todos)
 
 def update_todo(num, txt, todos):
