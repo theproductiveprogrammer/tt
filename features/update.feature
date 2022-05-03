@@ -47,3 +47,11 @@ Feature: update existing todos
       And we give the command "^1 updated item :345"
      Then todo item 1 will have text "updated item"
       And todo item 1 will have id 26
+
+  Scenario: Update an existing item
+    Given we have 25 todo items
+     When we give the command "+ another new item :123"
+      And we give the command "^1 updated item :345"
+      And we give the command "^1 another update"
+     Then todo item 1 will have text "another update"
+      And todo item 1 will have id 26
