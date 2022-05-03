@@ -318,7 +318,7 @@ def matches_1(words, todo):
             return True
         if todo.tags:
             for tag in todo.tags:
-                if word in tag.lower():
+                if word in f":{tag.lower()}":
                     return True
     return False
 
