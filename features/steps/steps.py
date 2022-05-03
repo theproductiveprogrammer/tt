@@ -16,7 +16,11 @@ def step_impl(context, num):
 
 @given(u'an existing todo list')
 def step_impl(context):
-    context.todos = parse(context.text)
+    context.todos = parse(context.text.split("\n"))
+    num = 1
+    for todo in reversed(context.todos):
+        todo.ref = num
+        num += 1
 
 
 
