@@ -113,7 +113,6 @@ def update_todo(num, txt, todos):
     for todo_ in reversed(todos):
         if todo_.ref == num:
             todo.id = todo_.id
-        todo_.ref += 1
     append_todo(todo, todos)
 
 def add_new_todo(txt, todos):
