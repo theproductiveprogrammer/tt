@@ -209,11 +209,11 @@ def display_format(todo):
         ref = "." * todo.ref
     else:
         ref = todo.ref
-    ref = f"[{ref: <4}]"
+    ref = f"{ref: <4}"
     closed = "x" if todo.closed else "-"
     tags = " ".join([f":{t}" for t in todo.tags])
     notes = "\n".join(todo.notes)
-    r = f"{ref}{closed}"
+    r = f"{ref} {closed}"
     if todo.txt:
         r = r + " " + todo.txt
     if tags:
