@@ -55,3 +55,11 @@ Feature: update existing todos
       And we give the command "^1 another update"
      Then todo item 1 will have text "another update"
       And todo item 1 will have id 26
+
+  Scenario: Update an existing item
+    Given we have 100 todo items
+     When we give the command "^100 updated item :99"
+     Then todo item 1 will have text "updated item"
+      And todo item 1 will have tags "99"
+      And todo item 1 will have id 1
+
