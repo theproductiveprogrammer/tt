@@ -1,5 +1,5 @@
 from behave import *
-from tt import grant_request, add_new_todo, get_todo_item
+from tt import grant_request, add_new_todo, get_todo_item, parse
 
 @given(u'we have no todo items')
 def step_impl(context):
@@ -12,6 +12,10 @@ def step_impl(context, num):
     for i in range(num):
         add_new_todo("item" + str(i), context.todos)
     pass
+
+@given(u'an existing todo list')
+def step_impl(context):
+    context.todos = parse(context.text)
 
 @when(u'we give the command "{text}"')
 def step_impl(context, text):
