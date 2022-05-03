@@ -123,7 +123,7 @@ def update_file(todos):
 
 
 def add_note(request, todos):
-    num, note = get_dotted_ref(request)
+    num, note = get_ref(request)
     if num == 0:
         raise TTError("Could not find reference for note")
     for todo_ in reversed(todos):
@@ -158,6 +158,8 @@ def get_numbered_ref(request):
 def get_ref(request):
     if request[0] == '.':
         return get_dotted_ref(request)
+    elif request[0] == '^':
+        return get_numbered_ref(request[1:])
     else:
         return get_numbered_ref(request)
 
