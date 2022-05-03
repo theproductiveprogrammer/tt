@@ -4,6 +4,8 @@ import os
 import re
 from datetime import datetime, timezone
 
+TODO_FILE = os.path.expanduser("~/.ttdata")
+
 #       understand/
 # main entry point into our program
 #       way/
@@ -14,7 +16,6 @@ def main():
     grant_user_request(todos)
 
 def load_todo():
-    TODO_FILE = os.path.expanduser("~/.ttdata")
     try:
         with open(TODO_FILE) as f:
             return parse(f)
@@ -50,7 +51,7 @@ def parse(lines):
     for todo in reversed(todos):
         if not todo.updated:
             todo.ref = num
-            num + 1
+            num += 1
     return todos
 
 def parse_line(line):
@@ -69,23 +70,56 @@ def parse_line(line):
 
 def grant_user_request(todos):
     request = " ".join(sys.argv[1:])
-    grant_request(request, todos)
+    resp = grant_request(request, todos)
+
+    if not request:
+        return
+
+    if request[0] == "+":
+        show_existing(10, todos)
+        update_file(todos)
+        return
+
+    if request[0] == '.':
+        print(display_format(resp[0]))
+        print(display_format(resp[1]))
+        update_file(todos)
+        return
+    if request[0] == '^':
+        print(display_format(resp[0]))
+        print(display_format(resp[1]))
+        update_file(todos)
+        return
+
+    if request[0] == 'n':
+        print(display_format(resp))
+        update_file(todos)
+        return
 
 def grant_request(request, todos):
-    if request:
+    if not request:
+        return show_existing(10, todos)
 
-        if request[0] == "+":
-            add_new_todo(request[1:], todos)
-        elif request[0] == '.':
-            update(request, todos)
-        elif request[0] == '^':
-            update(request[1:], todos)
-        elif request[0] == 'n':
-            add_note(request[1:], todos)
-        else:
-            raise TTError("Did not understand " + request)
+    if request[0] == "+":
+        return add_new_todo(request[1:], todos)
 
-    show_existing(10, todos)
+    if request[0] == '.':
+        todo,repl = update(request, todos)
+
+    if request[0] == '^':
+        todo,repl = update(request[1:], todos)
+
+    if request[0] == 'n':
+        todo = add_note(request[1:], todos)
+
+    raise TTError("Did not understand " + request)
+
+
+def update_file(todos):
+    with open(TODO_FILE, 'a') as f:
+        for todo in todos:
+            if todo.dirty:
+                f.write(save_format(todo) + "\n")
 
 
 def add_note(request, todos):
@@ -95,7 +129,8 @@ def add_note(request, todos):
     for todo_ in reversed(todos):
         if todo_.ref == num:
             todo_.notes.append(note)
-            return
+            todo_.dirty = True
+            return todo_
 
 
 #       understand/
@@ -128,23 +163,29 @@ def get_ref(request):
 
 def update(request, todos):
     num, request = get_ref(request)
-    update_todo(num, request, todos)
+    return update_todo(num, request, todos)
 
 def update_todo(num, txt, todos):
     todo = make_new_todo(txt, todos)
+    repl = None
     for todo_ in reversed(todos):
         if todo_.ref == num:
             todo.id = todo_.id
             todo.notes = todo_.notes
             todo_.updated = True
+            repl = todo_
+            break
     append_todo(todo, todos)
+    repl.ref = num
+    return todo,repl
 
 def add_new_todo(txt, todos):
     append_todo(make_new_todo(txt, todos), todos)
 
 def append_todo(todo, todos):
     for todo_ in todos:
-        todo_.ref += 1
+        if todo_.ref and todo_.ref != todo.ref:
+            todo_.ref += 1
     todos.append(todo)
 
 def make_new_todo(txt, todos):
@@ -174,7 +215,7 @@ def extract_tags(txt):
     p = re.compile(":([^\s:]*)")
     m = p.search(txt)
     while m:
-        txt = (txt[0:m.span()[0]].strip() + " " + txt[m.span()[1]:]).strip()
+        txt = (txt[0:m.span()[0]].strip() + " " + txt[m.span()[1]:].strip()).strip()
         if m.group(1):
             tags.append(m.group(1))
         m = p.search(txt)
@@ -199,7 +240,12 @@ class ToDo:
         self.dirty = False
 
     def __repr__(self):
-        return f"ToDo<{self.id} {self.txt} :{':'.join(self.tags)}: #{self.ref} |{'|'.join(self.notes)}| {'*' if self.dirty else None}>"
+        closed = "x" if self.closed else "-"
+        tags = ':'.join(self.tags)
+        notes = '|'.join(self.notes)
+        dirty = '*' if self.dirty else ""
+        updated = 'XX' if self.updated else ""
+        return f"ToDo<{updated}{closed}{self.id} {self.txt} :{tags}: #{self.ref} |{notes}| {dirty}{updated}>"
 
 
 class TTError(Exception):
