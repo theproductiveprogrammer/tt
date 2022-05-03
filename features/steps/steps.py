@@ -33,7 +33,6 @@ def step_impl(context, num, id):
 @then(u'todo item {num:d} will have tags ""')
 def step_impl(context, num):
     todo = get_todo_item(context.todos, num)
-    print(todo.tags)
     assert not todo.tags
 
 @then(u'todo item {num:d} will have tags "{tags}"')
