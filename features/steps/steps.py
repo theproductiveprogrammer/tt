@@ -1,5 +1,6 @@
 from behave import *
-from tt import grant_request, add_new_todo, get_todo_item, parse
+from tt import grant_request, add_new_todo, get_todo_item, parse, parse_line
+from datetime import *
 
 @given(u'we have no todo items')
 def step_impl(context):
@@ -17,9 +18,17 @@ def step_impl(context, num):
 def step_impl(context):
     context.todos = parse(context.text)
 
+
+
 @when(u'we give the command "{text}"')
 def step_impl(context, text):
     grant_request(text, context.todos)
+
+@when(u'we parse the item "{text}"')
+def step_impl(context, text):
+    todo = parse_line(text)
+    todo.ref = 1
+    context.todos.append(todo)
 
 
 @then(u'todo item {num:d} will have text "{text}"')
@@ -48,3 +57,17 @@ def step_impl(context, num, tags):
 def step_impl(context, num, notes):
     todo = get_todo_item(context.todos, num)
     assert notes == "|".join(todo.notes)
+
+@then(u'todo item {num:d} will have date "{date}"')
+def step_impl(context, num, date):
+    date = datetime.fromisoformat(date)
+    assert get_todo_item(context.todos, num).date == date
+
+@then(u'todo item {num:d} will be 0')
+def step_impl(context, num):
+    assert (not get_todo_item(context.todos, num).closed)
+
+@then(u'todo item {num:d} will be 1')
+def step_impl(context, num):
+    assert get_todo_item(context.todos, num).closed
+
