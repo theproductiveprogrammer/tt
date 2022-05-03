@@ -26,3 +26,9 @@ Feature: can parse saved todo items
     Then todo item 1 will have text "Code"
      And todo item 1 will have tags "tt"
      And todo item 1 will have id 36
+     And todo item 2 will have text "Target"
+     And todo item 2 will have tags "shopping"
+     And todo item 2 will have id 35
+     And todo item 3 will have text "Buy Car"
+     And todo item 3 will have tags ""
+     And todo item 3 will have id 34
