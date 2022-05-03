@@ -2,6 +2,7 @@
 import sys
 import os
 import re
+from datetime import datetime, timezone
 
 #       understand/
 # main entry point into our program
@@ -15,7 +16,7 @@ def main():
 def load_todo():
     TODO_FILE = os.path.expanduser("~/.ttdata")
     with open(TODO_FILE) as f:
-        return parse_todos(f)
+        return parse(f)
 
 #       way/
 # for each line in the file, parse it as a
@@ -26,26 +27,33 @@ def load_todo():
 #       understand/
 # The todo file format:
 # - [id] text :tag :tag :tag
+# notes
+# notes
 # x [id] text :tag :tag :tag
-# associated notes
-def parse_todos(lines):
+def parse(lines):
     todos = []
     for line in lines:
         todo = parse_line(line)
         if todo is None:
             todo = todos[-1] if todos else ToDo()
-            todo.addNote(line)
+            todo.notes.append(line.strip())
         else:
-            for todo_ in reversed(todos):
-                if todo_.id == todo.id:
-                    todo_.closed = True
-                    todo.notes = todo_.notes
-                    break
             todos.append(todo)
     return todos
 
 def parse_line(line):
-    return None
+    if not line:
+        return None
+    p = re.compile("^([-x]) ([0-9]+)@(\d\d\d\d-[0-1]\d-[0-3]\dT[0-2]\d:[0-6]\d:[0-6]\d[0-9.+:]*) (.*)")
+    m = p.search(line)
+    if not m:
+        return None
+    closed = True if m.group(1) == "x" or m.group(1) == "X" else False
+    id = int(m.group(2))
+    date = datetime.fromisoformat(m.group(3))
+    text = m.group(4)
+    return make_todo(closed, id, date, text)
+
 
 def grant_user_request(todos):
     print(todos)
@@ -125,18 +133,26 @@ def append_todo(todo, todos):
     todos.append(todo)
 
 def make_new_todo(txt, todos):
+    id = 1
+    for todo in todos:
+        if todo.id >= id:
+            id += 1
+    todo = make_todo(False, id, datetime.now(timezone.utc), txt)
+    todo.dirty = True
+    todo.ref = 1
+    return todo
+
+def make_todo(closed, id, date, txt):
     todo = ToDo()
     txt = txt.strip()
     if not txt:
         raise TTError("Todo item empty")
     (todo.txt, todo.tags) = extract_tags(txt)
-    todo.dirty = True
-    todo.id = 1
-    todo.ref = 1
-    for todo_ in todos:
-        if todo_.id == todo.id:
-            todo.id += 1
+    todo.id = id
+    todo.closed = closed
+    todo.date = date
     return todo
+
 
 def extract_tags(txt):
     tags = []
@@ -161,6 +177,9 @@ class ToDo:
         self.txt = None
         self.tags = []
         self.notes = []
+        self.date = None
+
+        self.closed = False
         self.dirty = False
 
     def __repr__(self):
