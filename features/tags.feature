@@ -13,4 +13,5 @@ Feature: extract item tags
       | +  NEW Item :                         |           |
       | +  NEW Item :another-brick-on-the-fire| another-brick-on-the-fire |
       | +  NEW Item :another:brick :the-fire  | another,brick,the-fire    |
+      | +  what http://does.not/work :actual  | actual                    |
 
