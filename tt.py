@@ -15,8 +15,11 @@ def main():
 
 def load_todo():
     TODO_FILE = os.path.expanduser("~/.ttdata")
-    with open(TODO_FILE) as f:
-        return parse(f)
+    try:
+        with open(TODO_FILE) as f:
+            return parse(f)
+    except FileNotFoundError:
+        return []
 
 #       way/
 # for each line in the file, parse it as a
@@ -38,7 +41,16 @@ def parse(lines):
             todo = todos[-1] if todos else ToDo()
             todo.notes.append(line.strip())
         else:
+            for i in reversed(range(len(todos))):
+                if todos[i].id == todo.id:
+                    todos[i].updated = True
+                    break
             todos.append(todo)
+    num = 1
+    for todo in reversed(todos):
+        if not todo.updated:
+            todo.ref = num
+            num + 1
     return todos
 
 def parse_line(line):
@@ -56,22 +68,24 @@ def parse_line(line):
 
 
 def grant_user_request(todos):
-    print(todos)
+    request = " ".join(sys.argv[1:])
+    grant_request(request, todos)
 
 def grant_request(request, todos):
-    if not request:
-        raise TTError("Nothing to do!")
+    if request:
 
-    if request[0] == "+":
-        add_new_todo(request[1:], todos)
-    elif request[0] == '.':
-        update(request, todos)
-    elif request[0] == '^':
-        update(request[1:], todos)
-    elif request[0] == 'n':
-        add_note(request[1:], todos)
-    else:
-        raise TTError("Did not understand " + request)
+        if request[0] == "+":
+            add_new_todo(request[1:], todos)
+        elif request[0] == '.':
+            update(request, todos)
+        elif request[0] == '^':
+            update(request[1:], todos)
+        elif request[0] == 'n':
+            add_note(request[1:], todos)
+        else:
+            raise TTError("Did not understand " + request)
+
+    show_existing(10, todos)
 
 
 def add_note(request, todos):
@@ -122,6 +136,7 @@ def update_todo(num, txt, todos):
         if todo_.ref == num:
             todo.id = todo_.id
             todo.notes = todo_.notes
+            todo_.updated = True
     append_todo(todo, todos)
 
 def add_new_todo(txt, todos):
@@ -179,6 +194,7 @@ class ToDo:
         self.notes = []
         self.date = None
 
+        self.updated = False
         self.closed = False
         self.dirty = False
 
@@ -221,6 +237,21 @@ def display_format(todo):
     if notes:
         r = r + "\n" + notes
     return r
+
+def show_existing(sz, todos):
+    if not todos:
+        print("")
+        return
+    for todo in reversed(todos):
+        if todo.updated or todo.closed:
+            continue
+        if sz <= 0:
+            break
+        sz -= 1
+        print(display_format(todo))
+
+
+
 
 if __name__ == "__main__":
     main()
