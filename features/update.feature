@@ -63,3 +63,15 @@ Feature: update existing todos
       And todo item 1 will have tags "99"
       And todo item 1 will have id 1
 
+  Scenario: Update an existing item
+    Given we have no todo items
+     When we give the command "+ another new item :123"
+     When we give the command "+ yet another item :123"
+      And we give the command "^2 updated item :345"
+      And we give the command "^2 another update"
+     Then todo item 1 will have text "another update"
+      And todo item 1 will have id 2
+      And todo item 2 will have text "updated item"
+      And todo item 2 will have tags "345"
+      And todo item 2 will have id 1
+
