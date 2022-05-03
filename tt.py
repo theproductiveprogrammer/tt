@@ -76,7 +76,7 @@ def grant_user_request(todos):
         return
 
     if request[0] == "+":
-        show_existing(10, todos)
+        show_existing(todos)
         update_file(todos)
         return
 
@@ -98,7 +98,7 @@ def grant_user_request(todos):
 
 def grant_request(request, todos):
     if not request:
-        return show_existing(10, todos)
+        return show_existing(todos)
 
     if request[0] == "+":
         return add_new_todo(request[1:], todos)
@@ -286,16 +286,13 @@ def display_format(todo):
         r = r + "\n" + notes
     return r
 
-def show_existing(sz, todos):
+def show_existing(todos):
     if not todos:
         print("")
         return
-    for todo in reversed(todos):
+    for todo in todos:
         if todo.updated or todo.closed:
             continue
-        if sz <= 0:
-            break
-        sz -= 1
         print(display_format(todo))
 
 
