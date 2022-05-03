@@ -71,6 +71,45 @@ Feature: show/represent the todo
     When we give the command "+ Code :tt"
     Then todo item 2 will have display format
       """
-      [..  ]x Target :shopping
+      ..   x Target :shopping
       """
+
+  Scenario: Represents a todo in a save-able format
+    Given an existing todo list
+      """
+      - 33@2022-01-01T02:03:35.897732+00:00 Create Program
+      - 34@2022-01-01T02:03:35.897732+00:00 Buy Car
+      note1 note11
+      note2 note22
+
+      note4 note 44
+      - 35@2022-01-01T02:03:35.897732+00:00 Target
+      x 36@2022-01-01T02:03:35.897732+00:00 :shopping :hi
+      """
+    When we give the command "+ Code :tt"
+    Then todo item 5 will have display format
+      """
+      5    - Create Program
+      """
+    Then todo item 4 will have display format
+      """
+      .... - Buy Car
+      note1 note11
+      note2 note22
+
+      note4 note 44
+      """
+     And todo item 3 will have display format
+      """
+      ...  - Target
+      """
+     And todo item 2 will have display format
+      """
+      ..   x :shopping :hi
+      """
+     And todo item 1 will have display format
+      """
+      .    - Code :tt
+      """
+
 
