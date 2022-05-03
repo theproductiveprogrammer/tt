@@ -204,5 +204,23 @@ def save_format(todo):
         r = r + "\n" + notes
     return r
 
+def display_format(todo):
+    if todo.ref < 5:
+        ref = "." * todo.ref
+    else:
+        ref = todo.ref
+    ref = f"[{ref: <4}]"
+    closed = "x" if todo.closed else "-"
+    tags = " ".join([f":{t}" for t in todo.tags])
+    notes = "\n".join(todo.notes)
+    r = f"{ref}{closed}"
+    if todo.txt:
+        r = r + " " + todo.txt
+    if tags:
+        r = r + " " + tags
+    if notes:
+        r = r + "\n" + notes
+    return r
+
 if __name__ == "__main__":
     main()
