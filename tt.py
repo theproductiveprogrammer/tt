@@ -223,12 +223,14 @@ def make_todo(closed, id, date, txt):
 
 def extract_tags(txt):
     tags = []
-    p = re.compile(":([^\s:]*)")
+    p = re.compile("\s:([^\s:]*)|^:([^\s:]*)")
     m = p.search(txt)
     while m:
         txt = (txt[0:m.span()[0]].strip() + " " + txt[m.span()[1]:].strip()).strip()
         if m.group(1):
             tags.append(m.group(1))
+        if m.group(2):
+            tags.append(m.group(2))
         m = p.search(txt)
     return (txt, tags)
 
