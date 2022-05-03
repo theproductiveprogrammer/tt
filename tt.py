@@ -173,6 +173,9 @@ def update_todo(num, txt, todos):
             todo.id = todo_.id
             todo.notes = todo_.notes
             todo_.updated = True
+            if not todo.txt and not todo.tags:
+                todo.txt = todo_.txt
+                todo.tags = todo_.tags
             repl = todo_
             break
     append_todo(todo, todos)
@@ -201,9 +204,8 @@ def make_new_todo(txt, todos):
 def make_todo(closed, id, date, txt):
     todo = ToDo()
     txt = txt.strip()
-    if not txt:
-        raise TTError("Todo item empty")
-    (todo.txt, todo.tags) = extract_tags(txt)
+    if txt:
+        (todo.txt, todo.tags) = extract_tags(txt)
     todo.id = id
     todo.closed = closed
     todo.date = date
