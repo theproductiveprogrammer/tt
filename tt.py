@@ -136,7 +136,7 @@ def make_new_todo(txt, todos):
     id = 1
     for todo in todos:
         if todo.id >= id:
-            id += 1
+            id = todo.id + 1
     todo = make_todo(False, id, datetime.now(timezone.utc), txt)
     todo.dirty = True
     todo.ref = 1
