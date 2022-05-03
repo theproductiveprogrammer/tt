@@ -75,6 +75,9 @@ def grant_user_request(todos):
     if not request:
         return
 
+    if request[0] == "=":
+        return
+
     if request[0] == "+":
         show_existing(todos)
         update_file(todos)
@@ -99,6 +102,10 @@ def grant_user_request(todos):
 def grant_request(request, todos):
     if not request:
         return show_existing(todos)
+
+    if request[0] == "=":
+        show_filtered(todos, request[1:])
+        return
 
     if request[0] == "+":
         return add_new_todo(request[1:], todos)
@@ -297,7 +304,21 @@ def show_existing(todos):
             continue
         print(display_format(todo))
 
+def show_filtered(todos, s):
+    words = s.strip().split(" ")
+    words = [w.lower() for w in words]
+    todos = [todo for todo in todos if matches_1(words, todo)]
+    show_existing(todos)
 
+def matches_1(words, todo):
+    for word in words:
+        if todo.txt and word in todo.txt.lower():
+            return True
+        if todo.tags:
+            for tag in todo.tags:
+                if word in tag.lower():
+                    return True
+    return False
 
 
 if __name__ == "__main__":
