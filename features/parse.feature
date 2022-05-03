@@ -19,8 +19,8 @@ Feature: can parse saved todo items
   Scenario: Parse a set of items
     Given an existing todo list
       """
-      - [34] Buy Car
-      - [35] Target :shopping
+      - 34@2022-01-01T02:03:35.897732+00:00 Buy Car
+      - 35@2022-01-01T02:03:35.897732+00:00 Target :shopping
       """
     When we give the command "+ Code :tt"
     Then todo item 1 will have text "Code"
