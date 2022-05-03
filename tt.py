@@ -104,13 +104,13 @@ def grant_request(request, todos):
         return add_new_todo(request[1:], todos)
 
     if request[0] == '.':
-        todo,repl = update(request, todos)
+        return update(request, todos)
 
     if request[0] == '^':
-        todo,repl = update(request[1:], todos)
+        return update(request[1:], todos)
 
     if request[0] == 'n':
-        todo = add_note(request[1:], todos)
+        return add_note(request[1:], todos)
 
     raise TTError("Did not understand " + request)
 
@@ -184,7 +184,7 @@ def add_new_todo(txt, todos):
 
 def append_todo(todo, todos):
     for todo_ in todos:
-        if todo_.ref and todo_.ref != todo.ref:
+        if todo_.ref:
             todo_.ref += 1
     todos.append(todo)
 
