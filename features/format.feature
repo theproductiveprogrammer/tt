@@ -71,6 +71,6 @@ Feature: show/represent the todo
     When we give the command "+ Code :tt"
     Then todo item 2 will have display format
       """
-      [.   ]x Target :shopping
+      [..  ]x Target :shopping
       """
 
