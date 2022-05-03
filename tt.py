@@ -58,8 +58,20 @@ def grant_request(request, todos):
         add_new_todo(request[1:], todos)
     elif request[0] == '.':
         update_dotted(request, todos)
+    elif request[0] == 'n':
+        add_note(request[1:], todos)
     else:
         raise TTError("Did not understand " + request)
+
+
+def add_note(request, todos):
+    num, note = get_dotted_ref(request)
+    if num == 0:
+        raise TTError("Could not find reference for note")
+    for todo_ in reversed(todos):
+        if todo_.ref == num:
+            todo_.notes.append(note)
+            return
 
 
 #       understand/
@@ -68,11 +80,15 @@ def grant_request(request, todos):
 #   .. < second todo
 #   ... < third todo
 #   .... and so on
-def update_dotted(request, todos):
+def get_dotted_ref(request):
     num = 0
     while request[0] == '.':
         num += 1
         request = request[1:]
+    return num, request.strip()
+
+def update_dotted(request, todos):
+    num, request = get_dotted_ref(request)
     update_todo(num, request, todos)
 
 def update_todo(num, txt, todos):
@@ -127,10 +143,11 @@ class ToDo:
         self.ref = None
         self.txt = None
         self.tags = []
+        self.notes = []
         self.dirty = False
 
     def __repr__(self):
-        return f"ToDo<{self.id} {self.txt} :{':'.join(self.tags)} #{self.ref} {'*' if self.dirty else None}>"
+        return f"ToDo<{self.id} {self.txt} :{':'.join(self.tags)}: #{self.ref} |{'|'.join(self.notes)}| {'*' if self.dirty else None}>"
 
 
 class TTError(Exception):
