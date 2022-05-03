@@ -52,14 +52,14 @@ def grant_user_request(todos):
 
 def grant_request(request, todos):
     if not request:
-        raise "Nothing to do!"
+        raise TTError("Nothing to do!")
 
     if request[0] == "+":
         add_new_todo(request[1:], todos)
     elif request[0] == '.':
         update_dotted(request, todos)
     else:
-        raise "Did not understand " + request
+        raise TTError("Did not understand " + request)
 
 
 #       understand/
@@ -95,7 +95,7 @@ def make_new_todo(txt, todos):
     todo = ToDo()
     txt = txt.strip()
     if not txt:
-        raise "Todo item empty"
+        raise TTError("Todo item empty")
     (todo.txt, todo.tags) = extract_tags(txt)
     todo.dirty = True
     todo.id = 1
@@ -131,6 +131,10 @@ class ToDo:
 
     def __repr__(self):
         return f"ToDo<{self.id} {self.txt} :{':'.join(self.tags)} #{self.ref} {'*' if self.dirty else None}>"
+
+
+class TTError(Exception):
+    pass
 
 if __name__ == "__main__":
     main()
