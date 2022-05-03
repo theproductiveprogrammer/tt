@@ -189,5 +189,20 @@ class ToDo:
 class TTError(Exception):
     pass
 
+
+def save_format(todo):
+    closed = "x" if todo.closed else "-"
+    date = datetime.isoformat(todo.date)
+    tags = " ".join([f":{t}" for t in todo.tags])
+    notes = "\n".join(todo.notes)
+    r = f"{closed} {todo.id}@{date}"
+    if todo.txt:
+        r = r + " " + todo.txt
+    if tags:
+        r = r + " " + tags
+    if notes:
+        r = r + "\n" + notes
+    return r
+
 if __name__ == "__main__":
     main()
