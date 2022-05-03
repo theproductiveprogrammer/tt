@@ -75,3 +75,13 @@ Feature: update existing todos
       And todo item 2 will have tags "345"
       And todo item 2 will have id 1
 
+  Scenario: Pull an existing item to the top
+    Given we have no todo items
+     When we give the command "+ another new item :123"
+      And we give the command "+ a third item :456:123"
+      And we give the command "+ yet another item :123"
+      And we give the command "^2"
+     Then todo item 1 will have id 2
+      And todo item 1 will have text "a third item"
+      And todo item 1 will have tags "456,123"
+
