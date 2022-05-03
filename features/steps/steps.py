@@ -1,5 +1,5 @@
 from behave import *
-from tt import grant_request, add_new_todo, get_todo_item, parse, parse_line
+from tt import grant_request, add_new_todo, get_todo_item, parse, parse_line, save_format
 from datetime import *
 
 @given(u'we have no todo items')
@@ -75,3 +75,7 @@ def step_impl(context, num):
 def step_impl(context, num):
     assert get_todo_item(context.todos, num).closed
 
+@then(u'todo item {num:d} will have save format')
+def step_impl(context, num):
+    todo = get_todo_item(context.todos, num)
+    assert save_format(todo) == context.text
