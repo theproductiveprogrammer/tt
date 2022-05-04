@@ -188,6 +188,7 @@ def close_todo(request, todos):
         if todo_.ref == num:
             todo = ToDo(todo_)
             todo.closed = True
+            todo.dirty = True
             break
     append_todo(todo, todos)
     return todo
