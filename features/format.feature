@@ -57,8 +57,7 @@ Feature: show/represent the todo
       """
       x 35@2022-01-01T02:03:35.897732+00:00 Target :shopping
       """
-    When we give the command "+ Code :tt"
-    Then todo item 2 will have save format
+    Then todo item 1 will have save format
       """
       x 35@2022-01-01T02:03:35.897732+00:00 Target :shopping
       """
@@ -68,25 +67,24 @@ Feature: show/represent the todo
       """
       x 35@2022-01-01T02:03:35.897732+00:00 Target :shopping
       """
-    When we give the command "+ Code :tt"
-    Then todo item 2 will have display format
+    Then todo item 1 will have display format
       """
-      ..   x Target :shopping
+      .    x Target :shopping
       """
 
   Scenario: Represents a todo in a save-able format
     Given an existing todo list
       """
-      - 33@2022-01-01T02:03:35.897732+00:00 Create Program
-      - 34@2022-01-01T02:03:35.897732+00:00 Buy Car
+      - 33@2022-01-01T02:01:35.897732+00:00 Create Program
+      - 34@2022-01-01T02:02:35.897732+00:00 Buy Car
       note1 note11
       note2 note22
 
       note4 note 44
       - 35@2022-01-01T02:03:35.897732+00:00 Target
-      x 36@2022-01-01T02:03:35.897732+00:00 :shopping :hi
+      - 36@2022-01-01T02:04:35.897732+00:00 :shopping :hi
+      - 37@2022-01-01T02:05:35.897732+00:00 Code :tt
       """
-    When we give the command "+ Code :tt"
     Then todo item 5 will have display format
       """
       5    - Create Program
@@ -105,7 +103,7 @@ Feature: show/represent the todo
       """
      And todo item 2 will have display format
       """
-      ..   x :shopping :hi
+      ..   - :shopping :hi
       """
      And todo item 1 will have display format
       """
