@@ -85,6 +85,11 @@ def grant_user_request(todos):
         update_file(todos)
         return
 
+    if request[0] == "x":
+        show(resp)
+        update_file(todos)
+        return
+
     if request[0] == '.':
         show(resp[0])
         show(resp[1])
