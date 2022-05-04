@@ -49,7 +49,7 @@ def parse(lines):
             todos.append(todo)
     num = 1
     for todo in reversed(todos):
-        if not todo.updated:
+        if not todo.updated and not todo.closed:
             todo.ref = num
             num += 1
     return todos
@@ -220,7 +220,7 @@ def add_new_todo(txt, todos):
 
 def append_todo(todo, todos):
     for todo_ in todos:
-        if not todo.updated and todo_.ref:
+        if not todo.updated and not todo.closed and todo_.ref:
             todo_.ref += 1
     todos.append(todo)
     todo.ref = 1
