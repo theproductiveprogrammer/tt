@@ -91,14 +91,14 @@ def grant_user_request(todos):
         return
 
     if request[0] == '.':
-        show(resp[0])
         show(resp[1])
+        show(resp[0])
         update_file(todos)
         return
 
     if request[0] == '^':
-        show(resp[0])
         show(resp[1])
+        show(resp[0])
         update_file(todos)
         return
 
@@ -335,7 +335,7 @@ def display_format(todo):
     ref = f"{ref: <4}"
     closed = "x" if todo.closed else "-"
     tags = " ".join([f":{t}" for t in todo.tags])
-    notes = "\n".join(todo.notes)
+    notes = "\n".join(["\t" + note for note in todo.notes])
     r = f"{ref} {closed}"
     if todo.txt:
         r = r + " " + todo.txt
