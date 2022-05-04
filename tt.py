@@ -73,39 +73,41 @@ def grant_user_request(todos):
     resp = grant_request(request, todos)
 
     if not request:
+        show(resp)
         return
 
     if request[0] == "=":
+        show(resp)
         return
 
     if request[0] == "+":
-        show_existing(todos)
+        show(resp)
         update_file(todos)
         return
 
     if request[0] == '.':
-        print(display_format(resp[0]))
-        print(display_format(resp[1]))
+        show(resp[0])
+        show(resp[1])
         update_file(todos)
         return
     if request[0] == '^':
-        print(display_format(resp[0]))
-        print(display_format(resp[1]))
+        show(resp[0])
+        show(resp[1])
         update_file(todos)
         return
 
     if request[0] == 'n':
-        print(display_format(resp))
+        show(resp)
         update_file(todos)
         return
 
 def grant_request(request, todos):
+
     if not request:
-        return show_existing(todos)
+        return showable(todos)
 
     if request[0] == "=":
-        show_filtered(todos, request[1:])
-        return
+        return get_filtered(todos, request[1:])
 
     if request[0] == "+":
         return add_new_todo(request[1:], todos)
@@ -192,7 +194,9 @@ def update_todo(num, txt, todos):
     return todo,repl
 
 def add_new_todo(txt, todos):
-    append_todo(make_new_todo(txt, todos), todos)
+    todo = make_new_todo(txt, todos)
+    append_todo(todo, todos)
+    return todo
 
 def append_todo(todo, todos):
     for todo_ in todos:
@@ -297,20 +301,22 @@ def display_format(todo):
         r = r + "\n" + notes
     return r
 
-def show_existing(todos):
+def show(todos):
     if not todos:
         print("")
         return
+    if isinstance(todos, ToDo):
+        todos = [todos]
     for todo in todos:
-        if todo.updated or todo.closed:
-            continue
         print(display_format(todo))
 
-def show_filtered(todos, s):
+def showable(todos):
+    return [todo for todo in todos if not todo.updated and not todo.closed]
+
+def get_filtered(todos, s):
     words = s.strip().split(" ")
     words = [w.lower() for w in words]
-    todos = [todo for todo in todos if matches_1(words, todo)]
-    show_existing(todos)
+    return [todo for todo in todos if matches_1(words, todo)]
 
 def matches_1(words, todo):
     for word in words:
