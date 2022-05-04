@@ -86,7 +86,7 @@ def grant_user_request(todos):
         return
 
     if request[0] == "x":
-        show(resp)
+        show_closed(resp)
         update_file(todos)
         return
 
@@ -119,7 +119,7 @@ def grant_request(request, todos):
         return add_new_todo(request[1:], todos)
 
     if request[0] == "x":
-        return close_todo(request[1:], todos)
+        return close(request[1:], todos)
 
     if request[0] == '.':
         return update(request, todos)
@@ -181,6 +181,12 @@ def get_ref(request):
         return get_numbered_ref(request[1:])
     else:
         return get_numbered_ref(request)
+
+def close(request, todos):
+    if not request or not request.strip():
+        return filter_closed(todos)
+    else:
+        return close_todo(request, todos)
 
 def close_todo(request, todos):
     num, request = get_ref(request)
@@ -339,6 +345,31 @@ def display_format(todo):
         r = r + "\n" + notes
     return r
 
+def xpanded_format(todo):
+    id = todo.id
+    date = todo.date.astimezone().isoformat()
+    closed = "x" if todo.closed else "-"
+    tags = " ".join([f":{t}" for t in todo.tags])
+    notes = "\n".join(todo.notes)
+    r = f"{closed}{id}"
+    if todo.txt:
+        r = r + " " + todo.txt
+    if tags:
+        r = r + " " + tags
+    r = f"{r}\t({date})"
+    if notes:
+        r = r + "\n" + notes
+    return r
+
+def show_closed(todos):
+    if not todos:
+        print("")
+        return
+    if isinstance(todos, ToDo):
+        todos = [todos]
+    for todo in todos:
+        print(xpanded_format(todo))
+
 def show(todos):
     if not todos:
         print("")
@@ -350,6 +381,9 @@ def show(todos):
 
 def showable(todos):
     return [todo for todo in todos if not todo.updated and not todo.closed]
+
+def filter_closed(todos):
+    return [todo for todo in todos if not todo.updated and todo.closed]
 
 def get_filtered(todos, s):
     words = s.strip().split(" ")
