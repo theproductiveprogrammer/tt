@@ -112,6 +112,9 @@ def grant_request(request, todos):
     if request[0] == "+":
         return add_new_todo(request[1:], todos)
 
+    if request[0] == "x":
+        return close_todo(request[1:], todos)
+
     if request[0] == '.':
         return update(request, todos)
 
@@ -150,7 +153,7 @@ def add_note(request, todos):
 #   .... and so on
 def get_dotted_ref(request):
     num = 0
-    while request[0] == '.':
+    while request and request[0] == '.':
         num += 1
         request = request[1:]
     return num, request.strip()
@@ -165,12 +168,23 @@ def get_numbered_ref(request):
     return (num, request)
 
 def get_ref(request):
+    request = request.strip()
     if request[0] == '.':
         return get_dotted_ref(request)
     elif request[0] == '^':
         return get_numbered_ref(request[1:])
     else:
         return get_numbered_ref(request)
+
+def close_todo(request, todos):
+    num, request = get_ref(request)
+    for todo_ in reversed(todos):
+        if todo_.ref == num:
+            todo = ToDo(todo_)
+            todo.closed = True
+            break
+    append_todo(todo, todos)
+    return todo
 
 def update(request, todos):
     num, request = get_ref(request)
@@ -190,7 +204,6 @@ def update_todo(num, txt, todos):
             repl = todo_
             break
     append_todo(todo, todos)
-    repl.ref = num
     return todo,repl
 
 def add_new_todo(txt, todos):
@@ -200,9 +213,10 @@ def add_new_todo(txt, todos):
 
 def append_todo(todo, todos):
     for todo_ in todos:
-        if todo_.ref:
+        if not todo.updated and todo_.ref:
             todo_.ref += 1
     todos.append(todo)
+    todo.ref = 1
 
 def make_new_todo(txt, todos):
     id = 1
@@ -211,7 +225,6 @@ def make_new_todo(txt, todos):
             id = todo.id + 1
     todo = make_todo(False, id, datetime.now(timezone.utc), txt)
     todo.dirty = True
-    todo.ref = 1
     return todo
 
 def make_todo(closed, id, date, txt):
@@ -240,11 +253,29 @@ def extract_tags(txt):
 
 def get_todo_item(todos, num):
     for todo in reversed(todos):
-        if todo.ref == num:
+        if not todo.updated and todo.ref == num:
             return todo
 
 class ToDo:
-    def __init__(self):
+    def __init__(self, orig=None):
+        if orig is None:
+            self.construct()
+        else:
+            self.copy(orig)
+
+    def copy(self, orig):
+        self.id = orig.id
+        self.ref = orig.ref
+        self.txt = orig.txt
+        self.tags = orig.tags
+        self.notes = orig.notes
+        self.date = orig.date
+
+        self.updated = orig.updated
+        self.closed = orig.closed
+        self.dirty = orig.dirty
+
+    def construct(self):
         self.id = None
         self.ref = None
         self.txt = None
