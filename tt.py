@@ -226,7 +226,7 @@ def add_new_todo(txt, todos):
 
 def append_todo(todo, todos):
     for todo_ in todos:
-        if not todo.updated and not todo.closed and todo_.ref:
+        if not todo_.updated and not todo_.closed and todo_.ref:
             todo_.ref += 1
     todos.append(todo)
     todo.ref = 1
