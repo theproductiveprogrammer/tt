@@ -34,6 +34,13 @@ def step_impl(context, text):
     todo.ref = 1
     context.todos.append(todo)
 
+@when(u'we save existing todos')
+def step_impl(context):
+    for todo in context.todos:
+        todo.dirty = False
+
+
+
 
 @then(u'todo item {num:d} will have text "{text}"')
 def step_impl(context, num, text):
@@ -42,6 +49,10 @@ def step_impl(context, num, text):
 @then(u'todo item {num:d} will be marked dirty')
 def step_impl(context, num):
     assert get_todo_item(context.todos, num).dirty
+
+@then(u'todo item {num:d} will not be marked dirty')
+def step_impl(context, num):
+    assert not get_todo_item(context.todos, num).dirty
 
 @then(u'todo item {num:d} will have id {id:d}')
 def step_impl(context, num, id):
