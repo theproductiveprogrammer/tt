@@ -67,11 +67,11 @@ def step_impl(context, num, date):
     date = datetime.fromisoformat(date)
     assert get_todo_item(context.todos, num).date == date
 
-@then(u'todo item {num:d} will be 0')
+@then(u'todo item {num:d} will be closed 0')
 def step_impl(context, num):
     assert (not get_todo_item(context.todos, num).closed)
 
-@then(u'todo item {num:d} will be 1')
+@then(u'todo item {num:d} will be closed 1')
 def step_impl(context, num):
     assert get_todo_item(context.todos, num).closed
 

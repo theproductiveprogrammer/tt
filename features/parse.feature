@@ -7,7 +7,7 @@ Feature: can parse saved todo items
       And todo item 1 will have date "<date>"
       And todo item 1 will have text "<text>"
       And todo item 1 will have tags "<tags>"
-      And todo item 1 will be <closed>
+      And todo item 1 will be closed <closed>
 
     Examples:
       | item                                                             | id | date                             | text          | tags           | closed |
