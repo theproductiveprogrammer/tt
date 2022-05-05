@@ -82,29 +82,29 @@ def grant_user_request(todos):
 
     if request[0] == "+":
         show(showable(todos))
-        update_file(todos)
+        update_file(resp)
         return
 
     if request[0] == "x":
         show_closed(resp)
-        update_file(todos)
+        update_file(resp)
         return
 
     if request[0] == '.':
-        show(resp[1])
-        show(resp[0])
+        show(resp.repl)
+        show(resp)
         update_file(todos)
         return
 
     if request[0] == '^':
-        show(resp[1])
-        show(resp[0])
-        update_file(todos)
+        show(resp.repl)
+        show(resp)
+        update_file(resp)
         return
 
     if request[0] == 'n':
         show(resp)
-        update_file(todos)
+        update_file(resp)
         return
 
 def grant_request(request, todos):
@@ -133,10 +133,65 @@ def grant_request(request, todos):
     raise TTError("Did not understand " + request)
 
 
-def update_file(todos):
+#       understand/
+# when we are working on a todo, it moves to the
+# head of the queue (last saved line in the file)
+# Then we may want to add notes to this todo. Because
+# every note updates the todo, we end up rewriting
+# the entire todo each time.
+# An easy optimization is to check for this case and
+# only write the updated note line
+#       example/
+# - do something
+# - and something
+# with note
+#                   (after adding a note line becomes)
+# - do something
+# - and something
+# with note
+# - and something
+# with note
+# another note
+#                   (after adding more note lines becomes)
+# - do something
+# - and something
+# with note
+# - and something
+# with note
+# another note
+# - and something
+# with note
+# another note
+# one more note line
+# - and something
+# with note
+# another note
+# one more note line
+# yet another note line
+# - and something
+# with note
+# another note
+# one more note line
+# yet another note line
+# we don't need to keep repeating this
+#
+#       way/
+# to optimize this we check what the last todo
+# looked line against the current todo and if
+# it simply being extended then output the
+# extension
+def update_file(todo):
+    if not todo or not todo.dirty:
+        return
+
     with open(TODO_FILE, 'a') as f:
-        for todo in todos:
-            if todo.dirty:
+        if todo.repl and todo.repl.ref == 1:
+            last = save_format(todo.repl)
+            curr = save_format(todo)
+            if curr.startswith(last):
+                curr = curr[len(last):].strip()
+                f.write(curr + "\n")
+            else:
                 f.write(save_format(todo) + "\n")
 
 
@@ -146,10 +201,13 @@ def add_note(request, todos):
         raise TTError("Could not find reference for note")
     for todo_ in reversed(todos):
         if todo_.ref == num:
-            todo_.notes.append(note)
-            todo_.dirty = True
-            return todo_
-
+            todo = ToDo(todo_)
+            todo.notes.append(note)
+            todo.dirty = True
+            todo.ref = 1
+            todos.append(todo)
+            return todo
+    raise TTError("Could not find previous todo for note")
 
 #       understand/
 # we can reference todos using a "dotted notation":
@@ -206,20 +264,17 @@ def update(request, todos):
     return update_todo(num, request, todos)
 
 def update_todo(num, txt, todos):
-    todo = make_new_todo(txt, todos)
-    repl = None
     for todo_ in reversed(todos):
         if todo_.ref == num:
-            todo.id = todo_.id
-            todo.notes = todo_.notes
-            todo_.updated = True
-            if not todo.txt and not todo.tags:
-                todo.txt = todo_.txt
-                todo.tags = todo_.tags
-            repl = todo_
-            break
-    append_todo(todo, todos)
-    return todo,repl
+            todo = ToDo(todo_)
+            todo.date = datetime.now(timezone.utc)
+            (txt, tags) = extract_tags(txt)
+            if txt:
+                todo.txt = txt
+                todo.tags = tags
+            append_todo(todo, todos)
+            return todo
+    raise TTError("Could not find previous todo")
 
 def add_new_todo(txt, todos):
     todo = make_new_todo(txt, todos)
@@ -244,9 +299,7 @@ def make_new_todo(txt, todos):
 
 def make_todo(closed, id, date, txt):
     todo = ToDo()
-    txt = txt.strip()
-    if txt:
-        (todo.txt, todo.tags) = extract_tags(txt)
+    (todo.txt, todo.tags) = extract_tags(txt)
     todo.id = id
     todo.closed = closed
     todo.date = date
@@ -254,6 +307,9 @@ def make_todo(closed, id, date, txt):
 
 
 def extract_tags(txt):
+    if not txt or not txt.strip():
+        return (txt,[])
+    txt = txt.strip()
     tags = []
     p = re.compile("\s:([^\s:]*)|^:([^\s:]*)")
     m = p.search(txt)
@@ -282,13 +338,16 @@ class ToDo:
         self.id = orig.id
         self.ref = orig.ref
         self.txt = orig.txt
-        self.tags = orig.tags
-        self.notes = orig.notes
+        self.tags = orig.tags[:]
+        self.notes = orig.notes[:]
         self.date = orig.date
 
-        self.updated = orig.updated
-        self.closed = orig.closed
-        self.dirty = orig.dirty
+        self.updated = False
+        self.closed = False
+        self.dirty = False
+
+        self.repl = orig
+        orig.updated = True
 
     def construct(self):
         self.id = None
@@ -302,13 +361,16 @@ class ToDo:
         self.closed = False
         self.dirty = False
 
+        self.repl = None
+
     def __repr__(self):
         closed = "x" if self.closed else "-"
         tags = ':'.join(self.tags)
         notes = '|'.join(self.notes)
         dirty = '*' if self.dirty else ""
         updated = 'XX' if self.updated else ""
-        return f"ToDo<{updated}{closed}{self.id} {self.txt} :{tags}: #{self.ref} |{notes}| {dirty}{updated}>"
+        repl = f"^{self.repl.ref}" if self.repl else ""
+        return f"ToDo<{updated}{closed}{self.id}{repl} {self.txt} :{tags}: #{self.ref} |{notes}| {dirty}{updated}>"
 
 
 class TTError(Exception):
