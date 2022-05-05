@@ -81,7 +81,7 @@ def grant_user_request(todos):
         return
 
     if request[0] == "+":
-        show(resp)
+        show(showable(todos))
         update_file(todos)
         return
 
