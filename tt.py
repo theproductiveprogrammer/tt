@@ -193,6 +193,8 @@ def close_todo(request, todos):
     for todo_ in reversed(todos):
         if todo_.ref == num:
             todo = ToDo(todo_)
+            if request:
+                todo.notes.append(request)
             todo.closed = True
             todo.dirty = True
             break
