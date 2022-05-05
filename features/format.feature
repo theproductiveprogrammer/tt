@@ -72,7 +72,7 @@ Feature: show/represent the todo
       .    x Target :shopping
       """
 
-  Scenario: Represents a todo in a save-able format
+  Scenario: Represents a todo in a display format
     Given an existing todo list
       """
       - 33@2022-01-01T02:01:35.897732+00:00 Create Program
@@ -92,10 +92,10 @@ Feature: show/represent the todo
     Then todo item 4 will have display format
       """
       .... - Buy Car
-      note1 note11
-      note2 note22
-
-      note4 note 44
+      	note1 note11
+      	note2 note22
+      	
+      	note4 note 44
       """
      And todo item 3 will have display format
       """
