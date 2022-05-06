@@ -272,6 +272,7 @@ def update_todo(num, txt, todos):
             if txt:
                 todo.txt = txt
                 todo.tags = tags
+            todo.dirty = True
             append_todo(todo, todos)
             return todo
     raise TTError("Could not find previous todo")
