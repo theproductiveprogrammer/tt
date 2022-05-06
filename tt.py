@@ -277,7 +277,12 @@ def update_todo(num, txt, todos):
     raise TTError("Could not find previous todo")
 
 def add_new_todo(txt, todos):
-    todo = make_new_todo(txt, todos)
+    id = 1
+    for todo in todos:
+        if todo.id >= id:
+            id = todo.id + 1
+    todo = make_todo(False, id, datetime.now(timezone.utc), txt)
+    todo.dirty = True
     append_todo(todo, todos)
     return todo
 
@@ -287,15 +292,6 @@ def append_todo(todo, todos):
             todo_.ref += 1
     todos.append(todo)
     todo.ref = 1
-
-def make_new_todo(txt, todos):
-    id = 1
-    for todo in todos:
-        if todo.id >= id:
-            id = todo.id + 1
-    todo = make_todo(False, id, datetime.now(timezone.utc), txt)
-    todo.dirty = True
-    return todo
 
 def make_todo(closed, id, date, txt):
     todo = ToDo()
