@@ -193,6 +193,8 @@ def update_file(todo):
                 f.write(curr + "\n")
             else:
                 f.write(save_format(todo) + "\n")
+        else:
+            f.write(save_format(todo) + "\n")
 
 
 def add_note(request, todos):
