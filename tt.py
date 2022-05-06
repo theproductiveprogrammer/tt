@@ -87,7 +87,8 @@ def grant_user_request(todos):
 
     if request[0] == "x":
         show_closed(resp)
-        update_file(resp)
+        if isinstance(resp, ToDo):
+            update_file(resp)
         return
 
     if request[0] == '.':
