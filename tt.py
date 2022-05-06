@@ -414,7 +414,7 @@ def xpanded_format(todo):
     date = todo.date.astimezone().isoformat()
     closed = "x" if todo.closed else "-"
     tags = " ".join([f":{t}" for t in todo.tags])
-    notes = "\n".join(todo.notes)
+    notes = "\n".join(["\t" + note for note in todo.notes])
     r = f"{closed}{id}"
     if todo.txt:
         r = r + " " + todo.txt
