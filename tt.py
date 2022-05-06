@@ -411,7 +411,7 @@ def display_format(todo):
 
 def xpanded_format(todo):
     id = todo.id
-    date = todo.date.astimezone().isoformat()
+    date = todo.date.astimezone().strftime('%a %b %d, %Y')
     closed = "x" if todo.closed else "-"
     tags = " ".join([f":{t}" for t in todo.tags])
     notes = "\n".join(["\t" + note for note in todo.notes])
