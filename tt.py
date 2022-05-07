@@ -76,6 +76,11 @@ def grant_user_request(todos):
         show(resp)
         return
 
+    if request == "=":
+        show(resp["tags"])
+        show(resp["untagged"])
+        return
+
     if request[0] == "=":
         show(resp)
         return
@@ -112,6 +117,9 @@ def grant_request(request, todos):
 
     if not request:
         return showable(todos)
+
+    if request == "=":
+        return tagsAndUntagged(todos)
 
     if request[0] == "=":
         return get_filtered(todos, request[1:])
@@ -377,6 +385,13 @@ class TTError(Exception):
     pass
 
 
+class TagStat:
+
+    def __init__(self, tag):
+        self.name = tag
+        self.num = 1
+
+
 def save_format(todo):
     closed = "x" if todo.closed else "-"
     date = datetime.isoformat(todo.date)
@@ -425,6 +440,9 @@ def xpanded_format(todo):
         r = r + "\n" + notes
     return r
 
+def display_tag_stat(tagstat):
+    return f"{tagstat.num:< 8}:{tagstat.name}"
+
 def show_closed(todos):
     if not todos:
         print("")
@@ -434,14 +452,19 @@ def show_closed(todos):
     for todo in todos:
         print(xpanded_format(todo))
 
-def show(todos):
-    if not todos:
+def show(items):
+    if not items:
         print("")
         return
-    if isinstance(todos, ToDo):
-        todos = [todos]
-    for todo in todos:
-        print(display_format(todo))
+    if not isinstance(items, list):
+        items = [items]
+
+    for item in items:
+        if isinstance(item, TagStat):
+            print(display_tag_stat(item))
+        else:
+            print(display_format(item))
+
 
 def showable(todos):
     return [todo for todo in todos if not todo.updated and not todo.closed]
@@ -463,6 +486,30 @@ def matches_1(words, todo):
                 if word in f":{tag.lower()}":
                     return True
     return False
+
+def tagsAndUntagged(todos):
+    tagged = []
+    untagged = []
+
+    def add_tag_1(tag):
+        for tagstat in tagged:
+            if tagstat.name == tag:
+                tagstat.num += 1
+                return
+        tagged.append(TagStat(tag))
+
+    for todo in showable(todos):
+        if todo.tags:
+            for tag in todo.tags:
+                add_tag_1(tag)
+        else:
+            untagged.append(todo)
+    import operator
+    return {
+            "tags": sorted(tagged, key=operator.attrgetter('num','name'), reverse=True),
+            "untagged": untagged
+           }
+
 
 
 if __name__ == "__main__":
