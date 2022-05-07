@@ -477,15 +477,29 @@ def get_filtered(todos, s):
     words = [w.lower() for w in words]
     return [todo for todo in showable(todos) if matches_1(words, todo)]
 
+#       way/
+# check that words are found in text or tags
+# and -words are NOT found in text or tags
 def matches_1(words, todo):
-    for word in words:
+    minuswords = [word[1:] for word in words if word[0] == "-"]
+    words = [word for word in words if word[0] != "-"]
+
+    def found_1(word):
         if todo.txt and word in todo.txt.lower():
             return True
         if todo.tags:
             for tag in todo.tags:
                 if word in f":{tag.lower()}":
                     return True
-    return False
+        return False
+
+    for word in words:
+        if not found_1(word):
+            return False
+    for word in minuswords:
+        if found_1(word):
+            return False
+    return True
 
 def tagsAndUntagged(todos):
     tagged = []
