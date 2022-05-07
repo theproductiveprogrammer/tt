@@ -475,7 +475,7 @@ def filter_closed(todos):
 def get_filtered(todos, s):
     words = s.strip().split(" ")
     words = [w.lower() for w in words]
-    return [todo for todo in todos if matches_1(words, todo)]
+    return [todo for todo in showable(todos) if matches_1(words, todo)]
 
 def matches_1(words, todo):
     for word in words:
