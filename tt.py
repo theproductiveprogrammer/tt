@@ -449,7 +449,7 @@ def show_closed(todos):
         return
     if isinstance(todos, ToDo):
         todos = [todos]
-    for todo in todos:
+    for todo in sorted(todos, key=lambda t: t.date):
         print(xpanded_format(todo))
 
 def show(items):
