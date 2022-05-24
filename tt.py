@@ -104,9 +104,16 @@ def grant_user_request(todos):
         return
 
     if request[0] == '^':
-        show(resp.repl)
-        show(resp)
-        update_file(resp)
+        if isinstance(resp, list):
+            if not resp:
+                return
+            for todo in resp:
+                update_file(todo)
+            show(resp)
+        else:
+            show(resp.repl)
+            show(resp)
+            update_file(resp)
         return
 
     if request[0] == 'n':
@@ -272,6 +279,16 @@ def close_todo(request, todos):
     return todo
 
 def update(request, todos):
+    if request[0] == '=':
+        return pull_up_matching(request[1:], todos)
+    else:
+        return update_one(request, todos)
+
+def pull_up_matching(request, todos):
+    todos_ = get_filtered(todos, request)
+    return [update_todo(todo.ref, None, todos) for todo in todos_]
+
+def update_one(request, todos):
     num, request = get_ref(request)
     return update_todo(num, request, todos)
 
@@ -474,6 +491,8 @@ def filter_closed(todos):
     return [todo for todo in todos if not todo.updated and todo.closed]
 
 def get_filtered(todos, s):
+    if not s:
+        return []
     words = s.strip().split(" ")
     words = [w.lower() for w in words]
     return [todo for todo in showable(todos) if matches_1(words, todo)]
