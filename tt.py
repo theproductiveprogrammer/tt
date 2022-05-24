@@ -91,9 +91,10 @@ def grant_user_request(todos):
         return
 
     if request[0] == "x":
-        show_closed(resp)
         if isinstance(resp, ToDo):
             update_file(resp)
+        show(showable(load_todo()))
+        show_closed(resp)
         return
 
     if request[0] == '.':
