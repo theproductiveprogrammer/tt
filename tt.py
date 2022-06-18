@@ -109,11 +109,12 @@ def grant_user_request(todos):
                 return
             for todo in resp:
                 update_file(todo)
-            show(resp)
-        else:
+            show(showable(load_todo()))
             show(resp.repl)
-            show(resp)
+        else:
             update_file(resp)
+            show(showable(load_todo()))
+            show(resp.repl)
         return
 
     if request[0] == 'n':
