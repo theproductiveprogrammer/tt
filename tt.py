@@ -67,9 +67,29 @@ def parse_line(line):
     text = m.group(4)
     return make_todo(closed, id, date, text)
 
+def show_help():
+    print("""tt.py : todo list manager
+
+By default shows list of things to do. Otherwise reponds to commands:
+
+    -h              :   show this help
+    + <txt> <:tag>  :   add a new todo
+    x <ref>         :   mark as done/closed
+    n <ref> note    :   add note to todo
+    ... <txt> <:tag>:   update todo
+    ^<ref> <txt>..  :   update todo
+    = <txt>         :   search for matching todos
+    =               :   show list of tags
+""")
+
 
 def grant_user_request(todos):
     request = " ".join(sys.argv[1:])
+
+    if request == "-h" or request == "--help":
+        show_help()
+        return
+
     resp = grant_request(request, todos)
 
     if not request:
