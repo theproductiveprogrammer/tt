@@ -22,7 +22,7 @@
 ##** Notes can be added to tasks which I find also are immensely useful. Tasks cannot be nested - I find that is more
 ##** convenient to use :tags to label tasks and sub tasks and filter them that way.
 ##**
-##** # Why it works
+##** ## Why it works
 ##**
 ##** It is amazingly fast to add, close, and review the entire task list. It stays out of my way and takes less than a
 ##** fraction of a second to perform any activity - from pulling up tasks, closing tasks, and adding new tasks. It is

@@ -1,25 +1,3 @@
-<style>
-h1:first-of-type {
-  font-size: 3em;
-  text-align: center;
-  border-bottom: 1px solid #77b822;
-  border-bottom: 1px solid #416611;
-  border-bottom: 1px solid black;
-  display: block;
-  margin: 0 auto;
-  padding-bottom: 0;
-  margin-bottom: 1.2em;
-  width: 60%;
-}
-p {
-  font-size: 1.2em;
-}
-img {
-  display: block;
-  width: 96px;
-  margin: 0 auto;
-}
-</style>
 # tt (task tracker)
 
 A simple, yet powerful, task tracker
@@ -44,7 +22,7 @@ an excellent heuristic for _what is important_ mixed nicely with _what you need 
 Notes can be added to tasks which I find also are immensely useful. Tasks cannot be nested - I find that is more
 convenient to use :tags to label tasks and sub tasks and filter them that way.
 
-# Why it works
+## Why it works
 
 It is amazingly fast to add, close, and review the entire task list. It stays out of my way and takes less than a
 fraction of a second to perform any activity - from pulling up tasks, closing tasks, and adding new tasks. It is
