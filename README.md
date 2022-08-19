@@ -2,7 +2,7 @@
 
 A simple, yet powerful, task tracker
 
-![logo](./logo.jpg)
+![icon](./icon.jpg)
 
 ## Background
 
