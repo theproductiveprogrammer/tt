@@ -44,6 +44,28 @@ def load():
 
     return recs
 
+def stop_tracking(recs, what):
+    rec = recs.get(what)
+    if not rec or not rec[-1]:
+        print(what + " not started")
+
+    (t,dt) = rec[-1]
+    tm = datetime.now(timezone.utc) - dt
+    tm = str(tm)
+    ndx = tm.rfind(".")
+    if ndx != -1:
+        tm = tm[:ndx]
+
+    if t == "-":
+        print(what + " already stopped - " + tm)
+        return
+
+    now = datetime.isoformat(datetime.now(timezone.utc))
+    with open(TRACKING_FILE, 'a') as f:
+        rec = "-" + now + "\t" + what
+        f.write(rec + "\n")
+        print("stopped: " + what + " [" + tm + "]")
+
 def start_tracking(recs, what):
     rec = recs.get(what)
 
