@@ -11,16 +11,38 @@ def main():
         show_help()
         return
 
+    recs = load()
+
     cmd = sys.argv[1]
     if cmd == "+":
-        start_tracking(sys.argv[2])
+        start_tracking(recs, sys.argv[2])
     elif cmd == "-":
-        stop_tracking(sys.argv[2])
+        stop_tracking(recs, sys.argv[2])
     elif cmd == "=":
-        show_tracked()
+        show_tracked(recs)
     else:
         show_help()
 
+def load():
+    recs = {}
+    try:
+
+        with open(TRACKING_FILE) as f:
+            for l in f:
+                [dt,what] = l[1:].split("\t")
+                what = what.strip()
+                v = recs.get(what)
+                if not v:
+                    v = []
+                    recs[what] = v
+                val = (l[0], datetime.fromisoformat(dt))
+                v.append(val)
+
+
+    except FileNotFoundError:
+        pass
+
+    return recs
 
 def start_tracking(recs, what):
     rec = recs.get(what)
