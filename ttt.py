@@ -44,6 +44,30 @@ def load():
 
     return recs
 
+def show_tracked(recs):
+    for what,vals in recs.items():
+        print("### " + what + " ###")
+        prev = None
+        for v in vals:
+            (t,dt) = v
+            if t == "+":
+                dts = datetime.isoformat(dt)
+                ndx = dts.rfind(".")
+                if ndx != -1:
+                    dts = dts[:ndx]
+                dts = dts.replace("T", " ")
+                print(dts, end=" ")
+                prev = dt
+            else:
+                tm =  dt - prev
+                tm = str(tm)
+                ndx = tm.rfind(".")
+                if ndx != -1:
+                    tm = tm[:ndx]
+                print(" [" + tm + "]")
+        print()
+
+
 def stop_tracking(recs, what):
     rec = recs.get(what)
     if not rec or not rec[-1]:
