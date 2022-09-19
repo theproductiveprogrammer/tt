@@ -48,8 +48,11 @@ def show_tracked(recs):
     for what,vals in recs.items():
         print("### " + what + " ###")
         prev = None
+        tot = None
+        last = "+"
         for v in vals:
             (t,dt) = v
+            last = t
             if t == "+":
                 dts = datetime.isoformat(dt)
                 ndx = dts.rfind(".")
@@ -60,11 +63,25 @@ def show_tracked(recs):
                 prev = dt
             else:
                 tm =  dt - prev
+                if tot:
+                    tot = tot + tm
+                else:
+                    tot = tm
                 tm = str(tm)
                 ndx = tm.rfind(".")
                 if ndx != -1:
                     tm = tm[:ndx]
                 print(" [" + tm + "]")
+
+        if last == "+":
+            print()
+
+        tot = str(tot)
+        ndx = tot.rfind(".")
+        if ndx != -1:
+            tot = tot[:ndx]
+        print("= " + str(tot))
+
         print()
 
 
