@@ -4,7 +4,7 @@ import sys
 import os
 from datetime import datetime, timezone
 
-TRACKING_FILE = os.path.expanduser("~/.tracking")
+TRACKING_FILE = os.path.expanduser("~/.tttracking")
 
 def main():
     if len(sys.argv) < 2:
