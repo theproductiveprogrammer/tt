@@ -127,7 +127,7 @@ def grant_user_request(todos):
     resp = grant_request(request, todos)
 
     if not request:
-        show(resp)
+        showShort(resp)
         return
 
     if request == "=":
@@ -537,6 +537,26 @@ def show(items):
             print(display_tag_stat(item))
         else:
             print(display_format(item))
+
+def showShort(items):
+    if not items:
+        print("")
+        return
+    if not isinstance(items, list):
+        items = [items]
+    show([short(t) for t in items])
+
+def short(todo):
+    if not todo.notes:
+        return todo
+    notes = [n for n in todo.notes if n.startswith("**")]
+    if not notes:
+        notes = todo.notes[0:2]
+    n = len(todo.notes) - len(notes)
+    if n > 0:
+        notes.append(f"...{n} more")
+    todo.notes = notes
+    return todo
 
 
 def showable(todos):
