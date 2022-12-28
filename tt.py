@@ -140,20 +140,20 @@ def grant_user_request(todos):
         return
 
     if request[0] == "+":
-        show(showable(todos))
+        showShort(showable(todos))
         update_file(resp)
         return
 
     if request[0] == "x":
         if isinstance(resp, ToDo):
             update_file(resp)
-        show(showable(load_todo()))
+        showShort(showable(load_todo()))
         show_closed(resp)
         return
 
     if request[0] == '.':
-        show(resp.repl)
-        show(resp)
+        showShort(resp.repl)
+        showShort(resp)
         update_file(todos)
         return
 
