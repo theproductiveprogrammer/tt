@@ -145,10 +145,14 @@ def grant_user_request(todos):
         return
 
     if request[0] == "x":
-        if isinstance(resp, ToDo):
-            update_file(resp)
+        if not isinstance(resp, list):
+            resp = [ resp ]
+        for r in resp:
+            if isinstance(r, ToDo):
+                update_file(r)
         showShort(showable(load_todo()))
-        show_closed(resp)
+        for r in resp:
+            show_closed(r)
         return
 
     if request[0] == '.':
@@ -318,7 +322,16 @@ def close(request, todos):
     if not request or not request.strip():
         return filter_closed(todos)
     else:
-        return close_todo(request, todos)
+        return close_todos(request, todos)
+
+def close_todos(request, todos):
+    requests = request.split(",")
+    resp = []
+    for request in requests:
+        resp.append(close_todo(request, todos))
+    for r in resp:
+        append_todo(r, todos)
+    return resp
 
 def close_todo(request, todos):
     num, request = get_ref(request)
@@ -330,7 +343,6 @@ def close_todo(request, todos):
             todo.closed = True
             todo.dirty = True
             break
-    append_todo(todo, todos)
     return todo
 
 def update(request, todos):
