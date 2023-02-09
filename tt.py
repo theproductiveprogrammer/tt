@@ -343,6 +343,7 @@ def close_todo(request, todos):
             if request:
                 todo.notes.append(request)
             todo.closed = True
+            todo.date = datetime.now(timezone.utc)
             todo.dirty = True
             break
     return todo
