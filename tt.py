@@ -328,7 +328,9 @@ def close_todos(request, todos):
     requests = request.split(",")
     resp = []
     for request in requests:
-        resp.append(close_todo(request, todos))
+        request = request.strip()
+        if request:
+            resp.append(close_todo(request, todos))
     for r in resp:
         append_todo(r, todos)
     return resp
