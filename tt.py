@@ -162,6 +162,7 @@ def grant_user_request(todos):
 
     if not request:
         showShort(resp)
+        showTot(todos)
         return
 
     if request == "=":
@@ -184,7 +185,9 @@ def grant_user_request(todos):
         for r in resp:
             if isinstance(r, ToDo):
                 update_file(r)
-        showShort(showable(load_todos()))
+        todos = load_todos()
+        showShort(showable(todos))
+        showTot(todos)
         for r in resp:
             show_closed(r)
         return
@@ -586,6 +589,16 @@ def show(items):
             print(display_tag_stat(item))
         else:
             print(display_format(item))
+
+def showTot(todos):
+    mx = 0;
+    for todo in todos:
+        if todo.updated or todo.closed:
+            continue
+        if todo.ref > mx:
+            mx = todo.ref
+    if mx:
+        print("/"+str(mx))
 
 def showShort(items):
     if not items:
