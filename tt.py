@@ -167,7 +167,7 @@ def grant_user_request(todos):
 
     if request == "=":
         show(resp["tags"])
-        show(resp["untagged"])
+        showShort(resp["untagged"])
         return
 
     if request[0] == "=":
@@ -674,7 +674,8 @@ def tagsAndUntagged(todos):
             for tag in todo.tags:
                 add_tag_1(tag)
         else:
-            untagged.append(todo)
+            if "(daily)" not in todo.txt.lower():
+                untagged.append(todo)
     import operator
     return {
             "tags": sorted(tagged, key=operator.attrgetter('num','name'), reverse=True),
