@@ -45,15 +45,49 @@ TODO_FILE = os.path.expanduser("~/.ttdata")
 # load the todo file and perform whatever
 # operation the user has requested
 def main():
-    todos = load_todo()
+    todos = load_todos()
     grant_user_request(todos)
 
-def load_todo():
+#       way/
+# load todo's from a the TODO file
+# and append daily tasks
+def load_todos():
+    todos = load_file_todos()
+    return append_daily_tasks(todos)
+
+
+def load_file_todos():
     try:
         with open(TODO_FILE) as f:
             return parse(f)
     except FileNotFoundError:
         return []
+
+
+#       understand/
+# daily tasks must be re-created every day
+# so we look for daily tasks that have been
+# closed earlier than a day and re-create them
+def append_daily_tasks(todos):
+    now = datetime.now()
+    opened = []
+    for option in todos:
+        if option.updated or not option.closed:
+            continue
+        if "(daily)" in option.txt.lower():
+            d = option.date.astimezone()
+            if now.date() != d.date():
+                todo = ToDo(option)
+                todo.date = datetime.now(timezone.utc)
+                todo.closed = False
+                todo.dirty = True
+                option.updated = True
+                opened.append(todo)
+    for todo in opened:
+        append_todo(todo, todos)
+        update_file(todo)
+    return todos
+
 
 #       way/
 # for each line in the file, parse it as a
@@ -150,7 +184,7 @@ def grant_user_request(todos):
         for r in resp:
             if isinstance(r, ToDo):
                 update_file(r)
-        showShort(showable(load_todo()))
+        showShort(showable(load_todos()))
         for r in resp:
             show_closed(r)
         return
@@ -167,11 +201,11 @@ def grant_user_request(todos):
                 return
             for todo in resp:
                 update_file(todo)
-            show(showable(load_todo()))
+            show(showable(load_todos()))
             show(resp.repl)
         else:
             update_file(resp)
-            show(showable(load_todo()))
+            show(showable(load_todos()))
             show(resp.repl)
         return
 
