@@ -140,7 +140,7 @@ def show_help():
 By default shows list of things to do. Otherwise reponds to commands:
 
     -h              :   show this help
-    + <txt> <:tag>  :   add a new todo
+    + <txt> <:tag>  :   add a new todo (++ to add but not show list)
     x <ref>         :   mark as done/closed
     n <ref> note    :   add note to todo
     ... <txt> <:tag>:   update todo
