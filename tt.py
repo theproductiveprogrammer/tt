@@ -148,6 +148,8 @@ By default shows list of things to do. Otherwise reponds to commands:
     = <txt>         :   search for matching todos
     =               :   show list of tags
     x               :   show closed
+
+    use (daily) to create a daily repeating task
 """)
 
 
