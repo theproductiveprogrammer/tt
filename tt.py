@@ -175,7 +175,12 @@ def grant_user_request(todos):
         return
 
     if request[0] == "+":
-        showShort(showable(todos))
+        if len(request) == 1:
+            return;
+        if request[1] == "+":
+            showShort(resp)
+        else:
+            showShort(showable(todos))
         update_file(resp)
         return
 
@@ -229,7 +234,12 @@ def grant_request(request, todos):
         return get_filtered(todos, request[1:])
 
     if request[0] == "+":
-        return add_new_todo(request[1:], todos)
+        if len(request) == 1:
+            return;
+        if request[1] == "+":
+            return add_new_todo(request[2:], todos)
+        else:
+            return add_new_todo(request[2:], todos)
 
     if request[0] == "x":
         return close(request[1:], todos)
