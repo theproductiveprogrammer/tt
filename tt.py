@@ -160,6 +160,9 @@ def grant_user_request(todos):
         show_help()
         return
 
+    if request == 'd':
+        request = '=(daily)'
+
     resp = grant_request(request, todos)
 
     if not request:
