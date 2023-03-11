@@ -147,6 +147,7 @@ By default shows list of things to do. Otherwise reponds to commands:
     ^<ref> <txt>..  :   update todo
     = <txt>         :   search for matching todos
     =               :   show list of tags
+    d               :   show list of (daily) tasks [=(daily)]
     x               :   show closed
 
     use (daily) to create a daily repeating task
