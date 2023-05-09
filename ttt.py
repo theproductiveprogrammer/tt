@@ -133,7 +133,7 @@ def record_latest(what):
     with open(LATEST_FILE, 'w') as f:
         f.write(what)
 
-def remove_latest(what):
+def remove_latest():
     f = open(LATEST_FILE, "w")
     f.truncate(0)
     f.close()
