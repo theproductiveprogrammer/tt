@@ -3,6 +3,7 @@
 import sys
 import os
 from datetime import datetime, timezone
+from subprocess import call
 
 TRACKING_FILE = os.path.expanduser("~/.tttracking")
 LATEST_FILE = os.path.expanduser("~/.tttracking.latest")
@@ -25,6 +26,8 @@ def main():
         remove_latest()
     elif cmd == "=":
         show_tracked(recs)
+    elif cmd == "-e":
+        open_file()
     else:
         show_help()
 
@@ -160,6 +163,10 @@ def remove_latest():
     f = open(LATEST_FILE, "w")
     f.truncate(0)
     f.close()
+
+def open_file():
+    EDITOR = os.environ.get('EDITOR', 'vim')
+    call([EDITOR,TRACKING_FILE])
 
 def show_help():
     print("ttt.py - Track time")
