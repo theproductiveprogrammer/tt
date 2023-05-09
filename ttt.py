@@ -50,7 +50,22 @@ def load():
     return recs
 
 def show_tracked(recs):
+    toshow = []
     for what,vals in recs.items():
+        inserted = False
+        i = 0
+        last = vals[-1][1]
+        while not inserted and i < len(toshow):
+            (w,v) = toshow[i]
+            l = v[-1]
+            if l[1] > last:
+                inserted = True
+                toshow.insert(i,(what,vals))
+            i += 1
+        if not inserted:
+            toshow.append((what,vals))
+
+    for what,vals in toshow:
         print("### " + what + " ###")
         prev = None
         tot = None
