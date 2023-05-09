@@ -19,7 +19,8 @@ def main():
         start_tracking(recs, sys.argv[2])
         record_latest(sys.argv[2])
     elif cmd == "-":
-        stop_tracking(recs, sys.argv[2])
+        for k in recs.keys():
+            stop_tracking(k, recs[k])
         remove_latest()
     elif cmd == "=":
         show_tracked(recs)
@@ -88,21 +89,19 @@ def show_tracked(recs):
         print()
 
 
-def stop_tracking(recs, what):
-    rec = recs.get(what)
+def stop_tracking(what, rec):
     if not rec or not rec[-1]:
-        print(what + " not started")
+        return;
 
     (t,dt) = rec[-1]
+    if t == "-":
+        return
+
     tm = datetime.now(timezone.utc) - dt
     tm = str(tm)
     ndx = tm.rfind(".")
     if ndx != -1:
         tm = tm[:ndx]
-
-    if t == "-":
-        print(what + " already stopped - " + tm)
-        return
 
     now = datetime.isoformat(datetime.now(timezone.utc))
     with open(TRACKING_FILE, 'a') as f:
