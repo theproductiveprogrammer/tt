@@ -8,11 +8,11 @@ TRACKING_FILE = os.path.expanduser("~/.tttracking")
 LATEST_FILE = os.path.expanduser("~/.tttracking.latest")
 
 def main():
-    if len(sys.argv) < 2:
-        show_help()
-        return
-
     recs = load()
+
+    if len(sys.argv) < 2:
+        show_tracked(recs)
+        return
 
     cmd = sys.argv[1]
     val = ' '.join(sys.argv[2:])
