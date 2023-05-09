@@ -15,10 +15,11 @@ def main():
     recs = load()
 
     cmd = sys.argv[1]
+    val = ' '.join(sys.argv[2:])
     if cmd == "+":
         stop_tracking(recs)
-        start_tracking(recs, sys.argv[2])
-        record_latest(sys.argv[2])
+        start_tracking(recs, val)
+        record_latest(val)
     elif cmd == "-":
         stop_tracking(recs)
         remove_latest()
