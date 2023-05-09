@@ -5,6 +5,7 @@ import os
 from datetime import datetime, timezone
 
 TRACKING_FILE = os.path.expanduser("~/.tttracking")
+LATEST_FILE = os.path.expanduser("~/.tttracking.latest")
 
 def main():
     if len(sys.argv) < 2:
@@ -16,8 +17,10 @@ def main():
     cmd = sys.argv[1]
     if cmd == "+":
         start_tracking(recs, sys.argv[2])
+        record_latest(sys.argv[2])
     elif cmd == "-":
         stop_tracking(recs, sys.argv[2])
+        remove_latest()
     elif cmd == "=":
         show_tracked(recs)
     else:
@@ -126,6 +129,15 @@ def start_tracking(recs, what):
         rec = "+" + now + "\t" + what
         f.write(rec + "\n")
         print("started: " + what)
+
+def record_latest(what):
+    with open(LATEST_FILE, 'w') as f:
+        f.write(what)
+
+def remove_latest(what):
+    f = open(LATEST_FILE, "w")
+    f.truncate(0)
+    f.close()
 
 def show_help():
     print("ttt.py - Track time")
