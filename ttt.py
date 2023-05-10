@@ -79,7 +79,7 @@ def show_tracked(recs):
             (t,dt) = v
             last = t
             if t == "+":
-                dts = datetime.isoformat(dt)
+                dts = dt.astimezone().isoformat()
                 ndx = dts.rfind(".")
                 if ndx != -1:
                     dts = dts[:ndx]
