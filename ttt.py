@@ -7,6 +7,7 @@ from subprocess import call
 
 TRACKING_FILE = os.path.expanduser("~/.tttracking")
 LATEST_FILE = os.path.expanduser("~/.tttracking.latest")
+COMPLETION_FILE = os.path.expanduser("~/.tttracking.completions")
 
 def main():
     recs = load()
@@ -21,6 +22,7 @@ def main():
         stop_tracking(recs)
         start_tracking(recs, val)
         record_latest(val)
+        record_completions(recs, val)
     elif cmd == "-":
         stop_tracking(recs)
         remove_latest()
@@ -163,6 +165,16 @@ def remove_latest():
     f = open(LATEST_FILE, "w")
     f.truncate(0)
     f.close()
+
+def record_completions(recs, what):
+    rec = recs.get(what)
+    if rec:
+        return
+    with open(COMPLETION_FILE, 'w') as f:
+        for k in recs.keys():
+            f.write(k + "\n")
+        f.write(what)
+
 
 def open_file():
     EDITOR = os.environ.get('EDITOR', 'vim')
