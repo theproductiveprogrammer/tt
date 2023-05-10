@@ -19,10 +19,7 @@ def main():
     cmd = sys.argv[1]
     val = ' '.join(sys.argv[2:])
     if cmd == "+":
-        stop_tracking(recs)
-        start_tracking(recs, val)
-        record_latest(val)
-        record_completions(recs, val)
+        add(recs, val)
     elif cmd == "-":
         stop_tracking(recs)
         remove_latest()
@@ -30,8 +27,17 @@ def main():
         show_tracked(recs)
     elif cmd == "-e":
         open_file()
-    else:
+    elif cmd == "-h":
         show_help()
+    else:
+        val = ' '.join(sys.argv[1:])
+        add(recs, val)
+
+def add(recs, val):
+    stop_tracking(recs)
+    start_tracking(recs, val)
+    record_latest(val)
+    record_completions(recs, val)
 
 def load():
     recs = {}
