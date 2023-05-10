@@ -122,13 +122,13 @@ def stop_tracking_(what, rec):
     if t == "-":
         return
 
-    tm = datetime.now(timezone.utc) - dt
+    now_ = datetime.now().astimezone()
+    tm = now_ - dt
     tm = str(tm)
     ndx = tm.rfind(".")
     if ndx != -1:
         tm = tm[:ndx]
 
-    now_ = datetime.now(timezone.utc)
     now = datetime.isoformat(now_)
     with open(TRACKING_FILE, 'a') as f:
         rec_ = "-" + now + "\t" + what
@@ -143,7 +143,7 @@ def start_tracking(recs, what):
     if rec and rec[-1]:
         (t,dt) = rec[-1]
         if t == "+":
-            tm = datetime.now(timezone.utc) - dt
+            tm = datetime.now().astimezone() - dt
             tm = str(tm)
             ndx = tm.rfind(".")
             if ndx != -1:
@@ -151,7 +151,7 @@ def start_tracking(recs, what):
             print(what + " already being tracked - " + tm)
             return
 
-    now = datetime.isoformat(datetime.now(timezone.utc))
+    now = datetime.isoformat(datetime.now().astimezone())
     with open(TRACKING_FILE, 'a') as f:
         rec = "+" + now + "\t" + what
         f.write(rec + "\n")
