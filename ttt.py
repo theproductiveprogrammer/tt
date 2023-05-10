@@ -189,7 +189,7 @@ def open_file():
 def show_help():
     print("ttt.py - Track time")
     print("Usage:")
-    print("  ttt.py + <what>        # start tracking time against <what>")
+    print("  ttt.py [+] <what>        # start tracking time against <what>")
     print("  ttt.py - <what>        # stop tracking time against <what>")
     print("  ttt.py =               # show times")
 
