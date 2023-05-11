@@ -36,6 +36,7 @@ import sys
 import os
 import re
 from datetime import datetime, timezone
+from subprocess import call
 
 TODO_FILE = os.path.expanduser("~/.ttdata")
 
@@ -160,6 +161,9 @@ def grant_user_request(todos):
     if request == "-h" or request == "--help":
         show_help()
         return
+
+    if request == "-e":
+        edit_data()
 
     if request == 'd':
         request = '=(daily)'
@@ -701,7 +705,9 @@ def tagsAndUntagged(todos):
             "untagged": untagged
            }
 
-
+def edit_data():
+    EDITOR = os.environ.get('EDITOR', 'vim')
+    call([EDITOR,TODO_FILE])
 
 if __name__ == "__main__":
     main()
