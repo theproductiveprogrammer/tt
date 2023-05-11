@@ -173,9 +173,6 @@ def remove_latest():
     f.close()
 
 def record_completions(recs, what):
-    rec = recs.get(what)
-    if rec:
-        return
     with open(COMPLETION_FILE, 'w') as f:
         for k in recs.keys():
             f.write(k + "\n")
