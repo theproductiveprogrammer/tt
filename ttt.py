@@ -26,7 +26,7 @@ def main():
     elif cmd == "=":
         show_tracked(recs)
     elif cmd == "-e":
-        open_file()
+        edit_data()
     elif cmd == "-h":
         show_help()
     else:
@@ -179,7 +179,7 @@ def record_completions(recs, what):
         f.write(what)
 
 
-def open_file():
+def edit_data():
     EDITOR = os.environ.get('EDITOR', 'vim')
     call([EDITOR,TRACKING_FILE])
 
