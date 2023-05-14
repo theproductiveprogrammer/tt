@@ -164,6 +164,7 @@ def grant_user_request(todos):
 
     if request == "-e":
         edit_data()
+        return
 
     if request == 'd':
         request = '=(daily)'
