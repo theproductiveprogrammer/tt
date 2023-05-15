@@ -13,7 +13,7 @@ def main():
     recs = load()
 
     if len(sys.argv) < 2:
-        show_tracked(recs)
+        show_daily_tracked(recs)
         return
 
     cmd = sys.argv[1]
@@ -59,6 +59,27 @@ def load():
         pass
 
     return recs
+
+def show_daily_tracked(recs):
+    daily_recs = {}
+    dt = None
+    for what,vals in recs.items():
+        for val in vals:
+            if val[0] == '+':
+                dt = val[1].strftime('%Y-%m-%d')
+            d = daily_recs.get(dt)
+            if not d:
+                d = {}
+                daily_recs[dt] = d
+            v = d.get(what)
+            if not v:
+                v = []
+                d[what] = v
+            v.append(val)
+    for k,v in daily_recs.items():
+        print('\n\n')
+        print('\t\t\t\t'+k)
+        show_tracked(v)
 
 def show_tracked(recs):
     toshow = []
