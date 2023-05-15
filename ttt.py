@@ -76,7 +76,19 @@ def show_daily_tracked(recs):
                 v = []
                 d[what] = v
             v.append(val)
+    toShow = []
     for k,v in daily_recs.items():
+        inserted = False
+        i = 0
+        while not inserted and i < len(toShow):
+            (k_,v_) = toShow[i]
+            if k_ > k:
+                inserted = True
+                toShow.insert(i,(k,v))
+            i += 1;
+        if not inserted:
+            toShow.append((k,v))
+    for k,v in toShow:
         print('\n\n')
         print('\t\t\t\t'+k)
         show_tracked(v)
