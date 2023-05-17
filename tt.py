@@ -601,6 +601,11 @@ def show_closed(todos):
     for todo in sorted(todos, key=lambda t: t.date):
         print(xpanded_format(todo))
 
+def isToday(item):
+    local_date = item.date.astimezone()
+    today = datetime.now().astimezone()
+    return local_date.year == today.year and local_date.month == today.month and local_date.day == today.day 
+
 def show(items):
     if not items:
         print("")
@@ -608,7 +613,11 @@ def show(items):
     if not isinstance(items, list):
         items = [items]
 
+    shown = False
     for item in items:
+        if isToday(item) and not shown:
+            shown = True
+            print("")
         if isinstance(item, TagStat):
             print(display_tag_stat(item))
         else:
