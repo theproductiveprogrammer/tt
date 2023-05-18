@@ -91,9 +91,11 @@ def show_daily_tracked(recs):
     for k,v in toShow:
         print('\n\n')
         print('\t\t\t\t'+k)
-        show_tracked(v)
+        tot = show_tracked(v)
+        print("["+fmtTm(tot)+"]")
 
 def show_tracked(recs):
+    tot_ = None
     toshow = []
     for what,vals in recs.items():
         inserted = False
@@ -131,11 +133,11 @@ def show_tracked(recs):
                     tot = tot + tm
                 else:
                     tot = tm
-                tm = str(tm)
-                ndx = tm.rfind(".")
-                if ndx != -1:
-                    tm = tm[:ndx]
-                print(" [" + tm + "]")
+                if tot_:
+                    tot_ = tot_ + tm
+                else:
+                    tot_ = tm
+                print(" [" + fmtTm(tm) + "]")
 
         if last == "+":
             print()
@@ -147,6 +149,16 @@ def show_tracked(recs):
         print("= " + str(tot))
 
         print()
+    return tot_
+
+
+def fmtTm(tm):
+    tm = str(tm)
+    ndx = tm.rfind(".")
+    if ndx != -1:
+        tm = tm[:ndx]
+    return tm
+
 
 
 def stop_tracking(recs):
