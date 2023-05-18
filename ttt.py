@@ -66,7 +66,7 @@ def show_daily_tracked(recs):
     for what,vals in recs.items():
         for val in vals:
             if val[0] == '+':
-                dt = val[1].strftime('%Y-%m-%d')
+                dt = val[1].strftime('%Y-%m-%d %a')
             d = daily_recs.get(dt)
             if not d:
                 d = {}
