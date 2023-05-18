@@ -615,12 +615,12 @@ def show(items):
 
     shown = False
     for item in items:
-        if isToday(item) and not shown:
-            shown = True
-            print("")
         if isinstance(item, TagStat):
             print(display_tag_stat(item))
         else:
+            if isToday(item) and not shown:
+                shown = True
+                print("")
             print(display_format(item))
 
 def showTot(todos):
