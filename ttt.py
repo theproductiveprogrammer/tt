@@ -95,7 +95,8 @@ def show_daily_tracked(recs):
         print("["+fmtTm(tot)+"]")
 
 def show_tracked(recs):
-    tot_ = None
+    now_ = datetime.now().astimezone()
+    tot_ = now_ - now_
     toshow = []
     for what,vals in recs.items():
         inserted = False
@@ -114,7 +115,7 @@ def show_tracked(recs):
     for what,vals in toshow:
         print("### " + what + " ###")
         prev = None
-        tot = None
+        tot = now_ - now_
         last = "+"
         for v in vals:
             (t,dt) = v
@@ -129,14 +130,8 @@ def show_tracked(recs):
                 prev = dt
             else:
                 tm =  dt - prev
-                if tot:
-                    tot = tot + tm
-                else:
-                    tot = tm
-                if tot_:
-                    tot_ = tot_ + tm
-                else:
-                    tot_ = tm
+                tot = tot + tm
+                tot_ = tot_ + tm
                 print(" [" + fmtTm(tm) + "]")
 
         if last == "+":
