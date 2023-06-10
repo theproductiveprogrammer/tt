@@ -10,9 +10,7 @@ EDITOR = os.environ.get('EDITOR', 'vim')
 TRACKING_FILE = os.path.expanduser("~/.tttracking")
 TRACKING_LATEST_FILE = os.path.expanduser("~/.tttracking.latest")
 COMPLETION_FILE = os.path.expanduser("~/.tttracking.completions")
-
 WORK_CYCLES_FILE = os.path.expanduser("~/.work-cycles")
-WORK_CYCLES_LATEST_FILE = os.path.expanduser("~/.work-cycles.latest")
 
 def main():
     recs = load()
@@ -230,9 +228,9 @@ Morale: L|M|H
 
     """.strip()
 
-    with open(WORK_CYCLES_LATEST_FILE, 'w') as f:
-        f.write(template)
-    call([EDITOR,"+exe '/A' | norm $","+startinsert!",WORK_CYCLES_LATEST_FILE])
+    with open(WORK_CYCLES_FILE, 'a') as f:
+        f.write(f"\n{template}")
+    call([EDITOR,"+exec 'norm G' | exec '?accomplish' | norm jA",WORK_CYCLES_FILE])
 
 def close_ultraworking(what, now):
     template = f"""
@@ -255,13 +253,10 @@ A.
     """.strip()
 
     template = ' ' + template[1:]
-    template = template + " \n\n\n\n"
+    template = template + " \n\n"
 
-    with open(WORK_CYCLES_LATEST_FILE, 'r') as f:
-        txt = f.read()
-        txt = txt + "\n" + template
-        with open(WORK_CYCLES_FILE, 'a') as f:
-            f.write(txt)
+    with open(WORK_CYCLES_FILE, 'a') as f:
+        f.write(f"\n{template}")
     call([EDITOR,"+exec 'norm G' | exec '?Completed' | norm jA",WORK_CYCLES_FILE])
 
 
@@ -283,7 +278,7 @@ def record_completions(recs, what):
 
 
 def edit_data():
-    call([EDITOR,TRACKING_FILE])
+    call([EDITOR,TRACKING_FILE,WORK_CYCLES_FILE])
 
 def show_help():
     print("ttt.py - Track time")
