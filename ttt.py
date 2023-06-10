@@ -5,9 +5,14 @@ import os
 from datetime import datetime, timezone
 from subprocess import call
 
+EDITOR = os.environ.get('EDITOR', 'vim')
+
 TRACKING_FILE = os.path.expanduser("~/.tttracking")
-LATEST_FILE = os.path.expanduser("~/.tttracking.latest")
+TRACKING_LATEST_FILE = os.path.expanduser("~/.tttracking.latest")
 COMPLETION_FILE = os.path.expanduser("~/.tttracking.completions")
+
+WORK_CYCLES_FILE = os.path.expanduser("~/.work-cycles")
+WORK_CYCLES_LATEST_FILE = os.path.expanduser("~/.work-cycles.latest")
 
 def main():
     recs = load()
@@ -42,17 +47,27 @@ def add(recs, val):
 def load():
     recs = {}
     try:
-
+        last_what = None
+        last_dt = None
         with open(TRACKING_FILE) as f:
             for l in f:
+                if l.startswith("#"):
+                    if last_what:
+                        val = (l[0], (l[1:], last_dt))
+                        v = recs.get(last_what)
+                        v.append(val)
+                    continue;
                 [dt,what] = l[1:].split("\t")
                 what = what.strip()
                 v = recs.get(what)
                 if not v:
                     v = []
                     recs[what] = v
-                val = (l[0], datetime.fromisoformat(dt))
+                dt = datetime.fromisoformat(dt)
+                val = (l[0], dt)
                 v.append(val)
+                last_what = what
+                last_dt = dt
 
 
     except FileNotFoundError:
@@ -128,7 +143,7 @@ def show_tracked(recs):
                 dts = dts.replace("T", " ")
                 print(dts, end=" ")
                 prev = dt
-            else:
+            elif t == '-':
                 tm =  dt - prev
                 tot = tot + tm
                 tot_ = tot_ + tm
@@ -176,6 +191,7 @@ def stop_tracking_(what, rec):
         tm = tm[:ndx]
 
     now = datetime.isoformat(now_)
+    close_ultraworking(what, now);
     with open(TRACKING_FILE, 'a') as f:
         rec_ = "-" + now + "\t" + what
         f.write(rec_ + "\n")
@@ -184,31 +200,78 @@ def stop_tracking_(what, rec):
         print("stopped: " + what + " [" + tm + "] ###")
 
 def start_tracking(recs, what):
-    rec = recs.get(what)
-
-    if rec and rec[-1]:
-        (t,dt) = rec[-1]
-        if t == "+":
-            tm = datetime.now().astimezone() - dt
-            tm = str(tm)
-            ndx = tm.rfind(".")
-            if ndx != -1:
-                tm = tm[:ndx]
-            print(what + " already being tracked - " + tm)
-            return
-
     now = datetime.isoformat(datetime.now().astimezone())
+    open_new_ultraworking(what, now);
     with open(TRACKING_FILE, 'a') as f:
         rec = "+" + now + "\t" + what
         f.write(rec + "\n")
         print("started: " + what)
 
+def open_new_ultraworking(what, now):
+    template = f"""
+------------------------------------------------
+                {now}
+# {what}
+
+Q. What am I trying to accomplish this cycle?
+A. 
+
+
+Q. How will I get started?
+A. 
+
+
+Q. Any hazards present?
+A. 
+
+
+Energy: L|M|H
+Morale: L|M|H
+
+    """.strip()
+
+    with open(WORK_CYCLES_LATEST_FILE, 'w') as f:
+        f.write(template)
+    call([EDITOR,"+exe '/A' | norm $","+startinsert!",WORK_CYCLES_LATEST_FILE])
+
+def close_ultraworking(what, now):
+    template = f"""
+.                         REVIEW      ----------
+                {now}
+Q. Completed target?
+A. Y|1/2|N
+
+
+Q. Anything noteworthy?
+A. 
+
+
+Q. Any distractions?
+A. 
+
+
+Q. Things to improve for the next cycle?
+A. 
+    """.strip()
+
+    template = ' ' + template[1:]
+    template = template + " \n\n\n\n"
+
+    with open(WORK_CYCLES_LATEST_FILE, 'r') as f:
+        txt = f.read()
+        txt = txt + "\n" + template
+        with open(WORK_CYCLES_FILE, 'a') as f:
+            f.write(txt)
+    call([EDITOR,"+exec 'norm G' | exec '?Completed' | norm jA",WORK_CYCLES_FILE])
+
+
+
 def record_latest(what):
-    with open(LATEST_FILE, 'w') as f:
+    with open(TRACKING_LATEST_FILE, 'w') as f:
         f.write(what)
 
 def remove_latest():
-    f = open(LATEST_FILE, "w")
+    f = open(TRACKING_LATEST_FILE, "w")
     f.truncate(0)
     f.close()
 
@@ -220,7 +283,6 @@ def record_completions(recs, what):
 
 
 def edit_data():
-    EDITOR = os.environ.get('EDITOR', 'vim')
     call([EDITOR,TRACKING_FILE])
 
 def show_help():
