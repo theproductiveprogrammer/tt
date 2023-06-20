@@ -219,7 +219,7 @@ Q. How will I get started?
 A. 
 
 
-Q. Any hazards present?
+Q. Any hazards present? How will I deal with them?
 A. 
 
 
