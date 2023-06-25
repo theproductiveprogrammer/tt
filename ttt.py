@@ -2,7 +2,7 @@
 
 import sys
 import os
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from subprocess import call
 
 EDITOR = os.environ.get('EDITOR', 'vim')
@@ -32,9 +32,31 @@ def main():
         edit_data()
     elif cmd == "-h":
         show_help()
+    elif cmd == "-countdown":
+        show_time_left(recs)
     else:
         val = ' '.join(sys.argv[1:])
         add(recs, val)
+
+def show_time_left(recs):
+    now = datetime.now().astimezone()
+    d1 = timedelta(minutes=20)
+    d2 = timedelta(minutes=40)
+    for what,vals in recs.items():
+        (t,dt) = vals[len(vals)-1]
+        if t == "+":
+            tm = now - dt
+            print(what + " " + timeleft_str(tm, d1) + "/" + timeleft_str(tm,d2))
+def timeleft_str(tm, d):
+    left = d - tm
+    if left.total_seconds() < 0:
+        over = tm - d
+        return "-" + timeleft_str_1(over)
+    else:
+        return timeleft_str_1(left)
+def timeleft_str_1(left):
+    left = str(left).split(":")
+    return left[1] + ":" + left[2].split(".")[0]
 
 def add(recs, val):
     stop_tracking(recs)
@@ -283,8 +305,9 @@ def edit_data():
 def show_help():
     print("ttt.py - Track time")
     print("Usage:")
-    print("  ttt.py [+] <what>        # start tracking time against <what>")
+    print("  ttt.py [+] <what>      # start tracking time against <what>")
     print("  ttt.py - <what>        # stop tracking time against <what>")
     print("  ttt.py =               # show times")
+    print("  ttt.py -countdown      # show time left for a 40/20 min slot")
 
 main()
