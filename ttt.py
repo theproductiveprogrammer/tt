@@ -56,7 +56,10 @@ def timeleft_str(tm, d):
         return timeleft_str_1(left)
 def timeleft_str_1(left):
     left = str(left).split(":")
-    return left[1] + ":" + left[2].split(".")[0]
+    if int(left[0]) == 0:
+        return left[1] + ":" + left[2].split(".")[0]
+    else:
+        return left[0] + ":" + left[1] + ":" + left[2].split(".")[0]
 
 def add(recs, val):
     stop_tracking(recs)
