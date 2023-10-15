@@ -150,6 +150,7 @@ By default shows list of things to do. Otherwise reponds to commands:
     =               :   show list of tags
     d               :   show list of (daily) tasks [=(daily)]
     x               :   show closed
+    u               :   dUmp current for refreshing list
 
     use (daily) to create a daily repeating task
 """)
@@ -175,6 +176,9 @@ def grant_user_request(todos):
         showShort(resp)
         showTot(todos)
         return
+
+    if request == "u":
+        showRaw(resp)
 
     if request == "=":
         show(resp["tags"])
@@ -239,6 +243,9 @@ def grant_user_request(todos):
 def grant_request(request, todos):
 
     if not request:
+        return showable(todos)
+
+    if request == "u":
         return showable(todos)
 
     if request == "=":
@@ -589,6 +596,10 @@ def xpanded_format(todo):
         r = r + "\n" + notes
     return r
 
+def raw_format(todo, ndx):
+    todo.id = ndx+1
+    return save_format(todo)
+
 def display_tag_stat(tagstat):
     return f"{tagstat.num:< 8}:{tagstat.name}"
 
@@ -623,6 +634,16 @@ def show(items):
                 print("")
             print(display_format(item))
 
+def showRaw(items):
+    if not items:
+        print("")
+        return
+    if not isinstance(items, list):
+        items = [items]
+
+    for (ndx, item) in enumerate(items):
+        print(raw_format(item, ndx))
+
 def showTot(todos):
     mx = 0;
     for todo in todos:
@@ -640,6 +661,19 @@ def showShort(items):
     if not isinstance(items, list):
         items = [items]
     show([short(t) for t in items])
+
+def short(todo):
+    if not todo.notes:
+        return todo
+    notes = [n for n in todo.notes if n.startswith("**")]
+    if not notes:
+        notes = todo.notes[0:2]
+    n = len(todo.notes) - len(notes)
+    if n > 0:
+        notes.append(f"...{n} more")
+    todo.notes = notes
+    return todo
+
 
 def short(todo):
     if not todo.notes:
