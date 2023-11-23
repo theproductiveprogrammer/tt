@@ -30,6 +30,8 @@ def main():
         show_tracked(recs)
     elif cmd == "-e":
         edit_data()
+    elif cmd == "-s":
+        show_now()
     elif cmd == "-h":
         show_help()
     elif cmd == "-countdown":
@@ -304,6 +306,11 @@ def record_completions(recs, what):
 
 def edit_data():
     call([EDITOR,TRACKING_FILE,WORK_CYCLES_FILE])
+
+def show_now():
+    with open(WORK_CYCLES_FILE) as f:
+        for l in f:
+            print(l.strip())
 
 def show_help():
     print("ttt.py - Track time")
