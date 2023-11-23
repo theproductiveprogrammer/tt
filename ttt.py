@@ -319,5 +319,7 @@ def show_help():
     print("  ttt.py - <what>        # stop tracking time against <what>")
     print("  ttt.py =               # show times")
     print("  ttt.py -countdown      # show time left for a 40/20 min slot")
+    print("  ttt.py -s              # show work cycles plan")
+    print("  ttt.py -e              # open tracking and work cycle for editing")
 
 main()
