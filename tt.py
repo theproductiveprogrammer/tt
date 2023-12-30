@@ -39,15 +39,15 @@ from datetime import datetime, timezone
 from subprocess import call
 
 TODO_FILE = os.path.expanduser("~/.ttdata")
+AREA_FILE = os.path.expanduser("~/.ttareas")
 
 #       understand/
 # main entry point into our program
 #       way/
-# load the todo file and perform whatever
-# operation the user has requested
+# perform whatever operation the user
+# has requested
 def main():
-    todos = load_todos()
-    grant_user_request(todos)
+    grant_user_request()
 
 #       way/
 # load todo's from a the TODO file
@@ -151,12 +151,13 @@ By default shows list of things to do. Otherwise reponds to commands:
     d               :   show list of (daily) tasks [=(daily)]
     x               :   show closed
     u               :   dUmp current for refreshing list
+    todo / do       :   open todo/area reminder file
 
     use (daily) to create a daily repeating task
 """)
 
 
-def grant_user_request(todos):
+def grant_user_request():
     request = " ".join(sys.argv[1:])
 
     if request == "-h" or request == "--help":
@@ -170,6 +171,14 @@ def grant_user_request(todos):
     if request == 'd':
         request = '=(daily)'
 
+    if request == 'do':
+        open_areas()
+        return
+    if request == 'todo':
+        edit_areas()
+        return
+
+    todos = load_todos()
     resp = grant_request(request, todos)
 
     if not request:
@@ -748,6 +757,12 @@ def tagsAndUntagged(todos):
             "tags": sorted(tagged, key=operator.attrgetter('num','name'), reverse=True),
             "untagged": untagged
            }
+
+def open_areas():
+    call(["open",AREA_FILE])
+def edit_areas():
+    EDITOR = os.environ.get('EDITOR', 'vim')
+    call([EDITOR,AREA_FILE])
 
 def edit_data():
     EDITOR = os.environ.get('EDITOR', 'vim')
