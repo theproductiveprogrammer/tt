@@ -249,10 +249,6 @@ A.
 Q. Any hazards present? How will I deal with them?
 A. 
 
-
-Energy: L|M|H
-Morale: L|M|H
-
     """.strip()
 
     with open(WORK_CYCLES_FILE, 'a') as f:
