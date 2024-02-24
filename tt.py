@@ -159,7 +159,7 @@ def main():
         openChronicles()
         return
 
-    if sys.argv[1] == "-e" or sys.argv[1] == "e":
+    if sys.argv[1] == "-e" or sys.argv[1] == "e" or sys.argv[1] == "--edit" or sys.argv[1] == "edit":
         openChronicles()
         return
 
@@ -170,6 +170,8 @@ def main():
     if sys.argv[1] == "-c" or sys.argv[1] == "c" or sys.argv[1] == "--cal" or sys.argv[1] == "cal":
         addToCalendar()
         return
+
+    print(f"Did not understand command line argument: '{sys.argv[1]}'")
 
 if __name__ == "__main__":
     try:
