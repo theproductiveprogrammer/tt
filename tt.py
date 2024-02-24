@@ -4,6 +4,8 @@ from subprocess import call
 from datetime import datetime
 import re, sys, os
 
+import gcal
+
 CHRONICLES = os.path.expanduser("~/chronicles.txt")
 MARKER = re.compile(r">>>>>>>>>>>>>>>>>>>>>>>>>*")
 COMPLETED = re.compile(r"[ \t]")
@@ -22,6 +24,9 @@ class Dt:
         self.day = int(day)
         self.weekday = weekday
 
+    def toISO(self):
+        return f"{self.year}-{self.month:02}-{self.day:02}"
+
     def __str__(self):
         return f"Dt({self.year}-{self.monthname}-{self.day}[{self.weekday}])"
 
@@ -33,6 +38,12 @@ class Tm:
         self.start_m = start_m
         self.end_h = end_h
         self.end_m = end_m
+
+    def toISOstart(self):
+        return f"{self.dt.toISO()}T{self.start_h}:{self.start_m}:00"
+
+    def toISOend(self):
+        return f"{self.dt.toISO()}T{self.end_h}:{self.end_m}:00"
 
     def __str__(self):
         return f"Tm({self.dt}: {self.txt} @{self.start_h}:{self.start_m}-{self.end_h}:{self.end_m})"
@@ -134,7 +145,7 @@ def addToCalendar():
         print("Nothing scheduled today...")
         return
     for s in scheduled:
-        print(f"Scheduling {s}")
+        gcal.addToGoogleCalendar(s)
 
 def getTodaysSchedule():
     lines = getOpen()
