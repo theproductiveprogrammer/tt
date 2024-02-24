@@ -129,6 +129,14 @@ def showOpen():
 #       way/
 # filter all open items that are scheduled for today
 def addToCalendar():
+    scheduled = getTodaysSchedule()
+    if not scheduled:
+        print("Nothing scheduled today...")
+        return
+    for s in scheduled:
+        print(f"Scheduling {s}")
+
+def getTodaysSchedule():
     lines = getOpen()
     scheduled_today = []
     prev_dt = None
@@ -139,7 +147,7 @@ def addToCalendar():
         tm = xTm(prev_dt, l)
         if tm and isToday(prev_dt):
             scheduled_today.append(tm)
-    print(scheduled_today)
+    return scheduled_today
 
 def isToday(dt):
     today = datetime.now()
