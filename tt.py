@@ -87,6 +87,8 @@ def openChronicles():
     lines = data()
     n = 0
     for (i,l) in enumerate(lines):
+        if not l:
+            continue
         if l[0] == '=':
             n = i + 1
         if re.fullmatch(MARKER, l):
