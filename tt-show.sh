@@ -4,8 +4,7 @@ cd $PRJFOLDER
 
 if [ -z "$1" ]
 then
-	./tt.py show | less
-	./tt.py edit
+	./tt.py show | less -K && ./tt.py edit
 else
 	./tt.py "$@"
 fi
