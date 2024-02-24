@@ -97,6 +97,15 @@ def openChronicles():
     call(["vim", CHRONICLES])
 
 
+#       understand/
+# "open" lines are those that are not marked as done (.)
+# or dropped (#)
+#   . done line starts with a dot
+#   # dropped line is discarded or moved to another day
+#
+#       way/
+# We collect all open lines, discarding duplicates, and
+# removing any days with no scheduled tasks
 def getOpen():
     lines = data()
     open_ = []
