@@ -111,13 +111,13 @@ def getOpen():
     open_ = []
     for l in lines:
 
-        if len(l) == 0:
+        if not l:
             continue
 
         if l[0] == ' ' or l[0] == '\t':
             continue;
 
-        if l[0] == 'x' or l[0] == 'X':
+        if l[0] == '.' or l[0] == '#':
             if len(l) > 2 and l[1] == ' ':
                 continue;
 
