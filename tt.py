@@ -156,14 +156,18 @@ def isToday(dt):
 def main():
 
     if len(sys.argv) == 1:
-        showOpen()
+        openChronicles()
         return
 
     if sys.argv[1] == "-e" or sys.argv[1] == "e":
         openChronicles()
         return
 
-    if sys.argv[1] == "-c" or sys.argv[1] == "c":
+    if sys.argv[1] == "-s" or sys.argv[1] == "s" or sys.argv[1] == "--show" or sys.argv[1] == "show":
+        showOpen()
+        return
+
+    if sys.argv[1] == "-c" or sys.argv[1] == "c" or sys.argv[1] == "--cal" or sys.argv[1] == "cal":
         addToCalendar()
         return
 
