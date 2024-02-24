@@ -2,9 +2,9 @@
 from datetime import datetime, timedelta
 from subprocess import call
 from datetime import datetime
-import re, sys
+import re, sys, os
 
-CHRONICLES = "../../personal/lists/chronicles.txt"
+CHRONICLES = os.path.expanduser("~/chronicles.txt")
 MARKER = re.compile(r">>>>>>>>>>>>>>>>>>>>>>>>>*")
 COMPLETED = re.compile(r"[ \t]")
 DATEFMT = re.compile(r"= ([A-Z][a-z][a-z]) ([0-3][0-9]) \| ([A-Z][a-z][a-z]) ======* ([0-9][0-9][0-9][0-9])")
