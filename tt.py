@@ -48,6 +48,12 @@ class Tm:
     def __str__(self):
         return f"Tm({self.dt}: {self.txt} @{self.start_h}:{self.start_m}-{self.end_h}:{self.end_m})"
 
+class Day:
+    def __init__(self, dt, line):
+        self.dt = dt
+        self.line = line
+        self.items = []
+
 def xDt(l):
     if not l:
         return
@@ -143,10 +149,43 @@ def removeEmptyDays(lines):
     ret.reverse()
     return ret
 
+#       way/
+# gather and sort open lines by day then show them
 def showOpen():
     lines = getOpen()
+    byday = gatherByDay(lines)
+    for day in byday:
+        print(day.line, flush=True)
+        items = sortedItems(day)
+        for item in items:
+            print(item, flush=True)
+
+def gatherByDay(lines):
+    ret = []
+    curr = None
     for l in lines:
-        print(l, flush=True)
+        dt = xDt(l)
+        if dt:
+            curr = Day(dt, l)
+            ret.append(curr)
+        else:
+            curr.items.append(l)
+    return ret
+
+#       way/
+# sort the scheduled items first by time
+# then the add rest
+def sortedItems(day):
+    sched = []
+    rest = []
+    for item in day.items:
+        tm = xTm(day.dt, item)
+        if tm:
+            sched.append(item)
+        else:
+            rest.append(item)
+    sched.sort(key = lambda l: xTm(day.dt, l).toISOstart())
+    return sched + rest
 
 #       way/
 # filter all open items that are scheduled for today
