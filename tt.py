@@ -6,7 +6,7 @@ import re, sys, os
 
 import gcal
 
-CHRONICLES = os.path.expanduser("~/chronicles.txt")
+CHRONICLES = os.path.expanduser("~/Desktop/chaRcoal/personal/lists/chronicles.txt")
 MARKER = re.compile(r">>>>>>>>>>>>>>>>>>>>>>>>>*")
 COMPLETED = re.compile(r"[ \t]")
 DATEFMT = re.compile(r"= ([A-Z][a-z][a-z]) ([0-3][0-9]) \| ([A-Z][a-z][a-z]) ======* ([0-9][0-9][0-9][0-9])")
@@ -91,9 +91,12 @@ def data():
 
 
 #       way/
-# find the current marker ">>>>>>>>>>>>>>>>>>>>>>>>>>>"
+# go to the chronicles directory (for vim to work well)
+# load the chronicles data then find the current
+# current marker ">>>>>>>>>>>>>>>>>>>>>>>>>>>"
 # and open vim to that the day before that line
 def openChronicles():
+    os.chdir(os.path.dirname(CHRONICLES))
     lines = data()
     n = 0
     for (i,l) in enumerate(lines):
