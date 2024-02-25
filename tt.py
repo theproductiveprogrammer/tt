@@ -197,6 +197,9 @@ def addToCalendar():
     for s in scheduled:
         gcal.addToGoogleCalendar(s)
 
+def openCalendar():
+    call(["open", "-a", "Safari.app", "https://calendar.google.com/calendar/u/5/r"])
+
 def getTodaysSchedule():
     lines = getOpen()
     scheduled_today = []
@@ -230,6 +233,7 @@ def main():
 
     if sys.argv[1] == "-c" or sys.argv[1] == "c" or sys.argv[1] == "--cal" or sys.argv[1] == "cal":
         addToCalendar()
+        openCalendar()
         return
 
     print(f"Did not understand command line argument: '{sys.argv[1]}'")
