@@ -128,7 +128,7 @@ def getOpen():
             continue
 
         if l[0] == '.' or l[0] == '#':
-            if len(l) > 2 and l[1] == ' ':
+            if len(l) > 2 and (l[1] == ' ' or l[1] == '\t'):
                 continue;
 
         if l in open_:
