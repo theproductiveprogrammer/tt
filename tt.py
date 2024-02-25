@@ -38,6 +38,10 @@ class Tm:
         self.start_m = start_m
         self.end_h = end_h
         self.end_m = end_m
+        self.notes = []
+
+    def addNote(self, note):
+        self.notes.append(note)
 
     def toISOstart(self):
         return f"{self.dt.toISO()}T{self.start_h}:{self.start_m}:00"
@@ -46,7 +50,7 @@ class Tm:
         return f"{self.dt.toISO()}T{self.end_h}:{self.end_m}:00"
 
     def __str__(self):
-        return f"Tm({self.dt}: {self.txt} @{self.start_h}:{self.start_m}-{self.end_h}:{self.end_m})"
+        return f"Tm({self.dt}: {self.txt} @{self.start_h}:{self.start_m}-{self.end_h}:{self.end_m}-{self.notes})"
 
 class Day:
     def __init__(self, dt, line):
@@ -120,9 +124,6 @@ def getOpen():
         if not l:
             continue
 
-        if l[0] == ' ' or l[0] == '\t':
-            continue;
-
         if l[0] == '.' or l[0] == '#':
             if len(l) > 2 and l[1] == ' ':
                 continue;
@@ -150,7 +151,8 @@ def removeEmptyDays(lines):
     return ret
 
 #       way/
-# gather and sort open lines by day then show them
+# gather open lines, ignore notes, sort the rest by day
+# then show them
 def showOpen():
     lines = getOpen()
     byday = gatherByDay(lines)
@@ -158,7 +160,8 @@ def showOpen():
         print(day.line, flush=True)
         items = sortedItems(day)
         for item in items:
-            print(item, flush=True)
+            if not isNote(item):
+                print(item, flush=True)
 
 def gatherByDay(lines):
     ret = []
@@ -204,6 +207,7 @@ def getTodaysSchedule():
     lines = getOpen()
     scheduled_today = []
     prev_dt = None
+    currTm = None
     for l in lines:
         dt = xDt(l)
         if dt:
@@ -211,11 +215,19 @@ def getTodaysSchedule():
         tm = xTm(prev_dt, l)
         if tm and isToday(prev_dt):
             scheduled_today.append(tm)
+            currTm = tm
+        elif currTm and isNote(l):
+            currTm.addNote(l)
+        else:
+            currTm = None
     return scheduled_today
 
 def isToday(dt):
     today = datetime.now()
     return today.year == dt.year and today.month == dt.month and today.day == dt.day
+
+def isNote(l):
+    return l[0] == ' ' or l[0] == '\t'
 
 def main():
 

@@ -21,6 +21,7 @@ def toEvent(tm):
             'dateTime': tm.toISOend(),
             'timeZone': 'Australia/Melbourne',
         },
+        'description': '\n'.join(tm.notes),
     }
 
 def addToGoogleCalendar(tm):
