@@ -10,7 +10,7 @@ CHRONICLES = os.path.expanduser("~/Desktop/chaRcoal/personal/lists/chronicles.tx
 MARKER = re.compile(r">>>>>>>>>>>>>>>>>>>>>>>>>*")
 COMPLETED = re.compile(r"[ \t]")
 DATEFMT = re.compile(r"= ([A-Z][a-z][a-z]) ([0-3][0-9]) \| ([A-Z][a-z][a-z]) ======* ([0-9][0-9][0-9][0-9])")
-SCHEDULED = re.compile(r"(.*) @([0-2][0-9]):([0-5][0-9])-([0-2][0-9]):([0-5][0-9])")
+SCHEDULED = re.compile(r"(.*) @([0-2]?[0-9]):([0-5][0-9])-([0-2]?[0-9]):([0-5][0-9])")
 
 def formatDay(date):
     return "= " + date.strftime("%b %d | %a") + " =" + "=" * 16 + " " + str(date.year)
