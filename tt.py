@@ -32,6 +32,10 @@ class Dt:
 
 class Tm:
     def __init__(self, dt, txt, start_h, start_m, end_h, end_m):
+        if len(start_h) == 1:
+            start_h = "0"+start_h
+        if len(end_h) == 1:
+            end_h = "0"+end_h
         self.dt = dt
         self.txt = txt
         self.start_h = start_h
