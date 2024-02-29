@@ -183,7 +183,7 @@ def gatherByDay(lines):
 
 #       way/
 # sort the scheduled items first by time
-# then the add rest
+# then the add rest alphabetically
 def sortedItems(day):
     sched = []
     rest = []
@@ -194,6 +194,7 @@ def sortedItems(day):
         else:
             rest.append(item)
     sched.sort(key = lambda l: xTm(day.dt, l).toISOstart())
+    rest.sort(key = lambda l: l.lower())
     return sched + rest
 
 #       way/
