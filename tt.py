@@ -183,7 +183,8 @@ def gatherByDay(lines):
 
 #       way/
 # sort the scheduled items first by time
-# then the add rest alphabetically
+# then the add rest grouped by the first
+# section of the input
 def sortedItems(day):
     sched = []
     rest = []
@@ -194,8 +195,50 @@ def sortedItems(day):
         else:
             rest.append(item)
     sched.sort(key = lambda l: xTm(day.dt, l).toISOstart())
-    rest.sort(key = lambda l: l.lower())
-    return sched + rest
+    return sched + group_1(rest)
+
+#       problem/
+# we may have several entries that are related
+#       project1_do_something
+#       money_pay_bills
+#       project1_do_another_thing
+#       project2_intro
+#       money_collect_dues
+#       project1_i_just_remembered
+# and we would like them grouped together
+#       project1_do_something
+#       project1_do_another_thing
+#       project1_i_just_remembered
+#       money_pay_bills
+#       money_collect_dues
+#       project2_intro
+#
+#       way/
+# extract the prefix/context of the line (part before the first _separator)
+# and add all lines under that prefix. Then output the prefix lines in order
+def group_1(lines):
+    pfxs = []
+    for l in lines:
+        pfx = l.split("_")[0]
+        p = None
+        for p_ in pfxs:
+            if p_.pfx == pfx:
+                p = p_
+                break
+        if not p:
+            p = PfxLines(pfx)
+            pfxs.append(p)
+        p.lines.append(l)
+    ret = []
+    for p in pfxs:
+        ret = ret + p.lines
+    return ret
+
+
+class PfxLines:
+    def __init__(self, pfx):
+        self.pfx = pfx
+        self.lines = []
 
 #       way/
 # filter all open items that are scheduled for today
