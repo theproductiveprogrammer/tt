@@ -28,6 +28,7 @@ def addToGoogleCalendar(tm):
     creds = authorize()
     service = build("calendar", "v3", credentials=creds)
     event = toEvent(tm)
+    print(f"Creating: {event.get('summary')} @{event.get('start').get('dateTime')}-{event.get('end').get('dateTime')}");
     event_res = service.events().insert(calendarId='primary', body=event).execute()
     print(f"Event created: {event_res.get('htmlLink')}")
 
